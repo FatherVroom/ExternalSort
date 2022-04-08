@@ -4,7 +4,7 @@ import student.TestCase;
 /**
  * Tests the MinHeap class
  * 
- * @author Aniket Adhikari
+ * @author Aniket Adhikari, Chris Koehler
  * @version 04.03.2022
  *
  */

@@ -6,7 +6,7 @@ import java.nio.ByteBuffer;
  * The input buffer only has space for 512 records, or 1 block of records. These
  * records can be replaced by other blocks.
  * 
- * @author Aniket Adhikari
+ * @author Aniket Adhikari, Chris Koehler
  * @version 6 April 2022
  */
 public class InputBuffer {

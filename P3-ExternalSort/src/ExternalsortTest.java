@@ -1,7 +1,7 @@
 import student.TestCase;
 
 /**
- * @author Aniket Adhikari
+ * @author Aniket Adhikari, Chris Koehler
  * @version 21 March 2022
  */
 public class ExternalsortTest extends TestCase {

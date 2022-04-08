@@ -3,7 +3,7 @@ import java.nio.ByteBuffer;
 /**
  * Holds a single record
  * 
- * @author CS Staff
+ * @author CS Staff, Aniket Adhikari, Chris Koehler
  * @version 2020-10-15
  */
 public class Record implements Comparable<Record> {

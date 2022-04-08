@@ -9,13 +9,12 @@ import java.nio.ByteBuffer;
  * thought of as an array of bytes) and read records inside the block. Each
  * block contains 512 records and each record is 16 bytes of memory
  * 
- * @author Aniket Adhikari
+ * @author Aniket Adhikari, Chris Koehler
  * @version 2 April 2022
  *
  */
 public class Parser {
     private static final int BLOCK_SIZE = 8192;
-    private static final int NUM_BLOCKS = 8;
     private String fileName;
     private RandomAccessFile raf;
 
@@ -36,7 +35,7 @@ public class Parser {
             throw new FileNotFoundException("Could not find the file: "
                 + fileName);
         }
-//        mhRecords = new MinHeap<Record>(null, 0, NUM_RECORDS * NUM_BLOCKS);
+// mhRecords = new MinHeap<Record>(null, 0, NUM_RECORDS * NUM_BLOCKS);
     }
 
 
@@ -50,27 +49,32 @@ public class Parser {
      */
     public byte[] getBlock() throws IOException {
         // allocate space to create bytebuffer
-        ByteBuffer block = ByteBuffer.allocate(BLOCK_SIZE); 
+        ByteBuffer block = ByteBuffer.allocate(BLOCK_SIZE);
         try {
             // fill byte buffer with contents of 1st block from fileName.bin
             for (int i = 1; i <= BLOCK_SIZE; i++) {
+                // reads a byte from the file of data blocks
                 byte b = raf.readByte();
+                // places byte into bytebuffer
                 block.put(b);
             }
         }
         catch (EOFException e) {
             throw new EOFException("End of the file titled, " + fileName
-                + ", has been reached");
+                + ", has been reached. File must have at least 1 block of records (512 records).");
         }
+        // returns block array after conversion from bytebuffer to byte array
         return block.array();
     }
- 
+
+
     /**
+     * Gets the number of blocks to be parsed through in a file
      * 
      * @return
      * @throws IOException
      */
-    public long numOfBlocks() throws IOException {
+    private long getNumOfBlocks() throws IOException {
         try {
             return raf.length() / BLOCK_SIZE;
         }
