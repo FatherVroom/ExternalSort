@@ -25,11 +25,10 @@ public class MinHeapTest extends TestCase {
 
     public void testHeapSize() {
         assertEquals(0, mh.heapSize());
-
     }
     
     /**
-     * 
+     * Tests that insertion fails on a MinHeap that has reached capacity
      */
     public void testInsertFull() {
         for (int i = 0; i < numRecords; i++) {
@@ -47,7 +46,8 @@ public class MinHeapTest extends TestCase {
     }
     
     /**
-     * 
+     * Tests that MinHeap properties remain satisfied after inserting new
+     * Records
      */
     public void testInsert() {
         ByteBuffer rec = ByteBuffer.allocate(Double.BYTES + Long.BYTES);
@@ -57,6 +57,7 @@ public class MinHeapTest extends TestCase {
         Record firstRecord = new Record(rec.array());
         mh.insert(firstRecord);
         assertEquals(1, mh.heapSize());
+        assertTrue(81.0 == r[0].getKey());
 
         // placement of record 2
         rec = ByteBuffer.allocate(Double.BYTES + Long.BYTES);
@@ -65,6 +66,8 @@ public class MinHeapTest extends TestCase {
         Record secondRecord = new Record(rec.array());
         mh.insert(secondRecord);
         assertEquals(2, mh.heapSize());
+        assertTrue(17.0 == r[0].getKey());
+        assertTrue(81.0 == r[1].getKey());
 
         // placement of record 3
         rec = ByteBuffer.allocate(Double.BYTES + Long.BYTES);
@@ -73,6 +76,9 @@ public class MinHeapTest extends TestCase {
         Record thirdRecord = new Record(rec.array());
         mh.insert(thirdRecord);
         assertEquals(3, mh.heapSize());
+        assertTrue(17.0 == r[0].getKey());
+        assertTrue(81.0 == r[1].getKey());
+        assertTrue(24.0 == r[2].getKey());
 
         // placement of record 4
         rec = ByteBuffer.allocate(Double.BYTES + Long.BYTES);
@@ -81,5 +87,49 @@ public class MinHeapTest extends TestCase {
         Record fourthRecord = new Record(rec.array());
         mh.insert(fourthRecord);
         assertEquals(4, mh.heapSize());
+        assertTrue(13.0 == r[0].getKey());
+        assertTrue(17.0 == r[1].getKey());
+        assertTrue(24.0 == r[2].getKey());
+        assertTrue(81.0 == r[3].getKey());
+    }
+    
+    /**
+     * Tests that MinHeap properties are satisfied after the constructor
+     * is called and an unorganized Record array is passed in
+     */
+    public void testBuildHeap() {
+        //Create unorganized Record[]
+        ByteBuffer rec = ByteBuffer.allocate(Double.BYTES + Long.BYTES);
+        rec.putLong(1);
+        rec.putDouble(81);
+        Record firstRecord = new Record(rec.array());
+        rec = ByteBuffer.allocate(Double.BYTES + Long.BYTES);
+        rec.putLong(2);
+        rec.putDouble(17);
+        Record secondRecord = new Record(rec.array());
+        rec = ByteBuffer.allocate(Double.BYTES + Long.BYTES);
+        rec.putLong(3);
+        rec.putDouble(24);
+        Record thirdRecord = new Record(rec.array());
+        rec = ByteBuffer.allocate(Double.BYTES + Long.BYTES);
+        rec.putLong(4);
+        rec.putDouble(13);
+        Record fourthRecord = new Record(rec.array());
+        
+        //Record[] == {81, 17, 24, 13}
+        r[0] = firstRecord;
+        r[1] = secondRecord;
+        r[2] = thirdRecord;
+        r[3] = fourthRecord;
+        MinHeap<Record> testHeap = new MinHeap<Record>(r, 4, 10);
+        
+        //Ensure Record[] satisfied MinHeap properties
+        rec = ByteBuffer.allocate(Double.BYTES + Long.BYTES);
+        rec.putLong(1);
+        rec.putDouble(81);
+        assertTrue(13.0 == r[0].getKey());
+        assertTrue(17.0 == r[1].getKey());
+        assertTrue(24.0 == r[2].getKey());
+        assertTrue(81.0 == r[3].getKey());
     }
 }

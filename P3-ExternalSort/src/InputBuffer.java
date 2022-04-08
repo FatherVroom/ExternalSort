@@ -43,7 +43,7 @@ public class InputBuffer {
             b.get(newRecord, i, 16); // store block contents into the byte array
                                      // newRecord
             Record r = new Record(newRecord); // store the byte array into an
-                                              // actual record
+                                              // actual Record
             records[recCounter] = r; // place the record in the record array
             recCounter++;
         }
@@ -52,6 +52,8 @@ public class InputBuffer {
 
     /**
      * Gets the Records in an array format
+     * 
+     * @precondition fillRecords() has been called on byte[] block
      * 
      * @return records inside the Buffer
      */
@@ -63,7 +65,7 @@ public class InputBuffer {
 
     /**
      * Determines whether there is space in the Buffer for blocks of records to
-     * be placed inside off
+     * be placed inside of
      * 
      * @return true of the InputBuffer is empty
      */
