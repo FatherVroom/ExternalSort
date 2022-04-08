@@ -25,7 +25,6 @@ public class Record implements Comparable<Record> {
         key = bb.getDouble(8);
     }
 
-
     /**
      * returns the complete record
      * 
@@ -55,7 +54,7 @@ public class Record implements Comparable<Record> {
         return value;
     }
     
-    public void setKey(double k) {
+    public void setKey(double k) { //  ** complete in constructor **
         ByteBuffer bb = ByteBuffer.allocate(8);
         bb.putDouble(k);
         byte[] kb = bb.array();
@@ -67,7 +66,7 @@ public class Record implements Comparable<Record> {
         key = k;
     }
     
-    public void setValue(long v) {
+    public void setValue(long v) { //  ** complete in constructor **
         ByteBuffer bb = ByteBuffer.allocate(8);
         bb.putLong(v);
         byte[] vb = bb.array();
