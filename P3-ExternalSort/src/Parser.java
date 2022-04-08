@@ -15,11 +15,9 @@ import java.nio.ByteBuffer;
  */
 public class Parser {
     private static final int BLOCK_SIZE = 8192;
-    private static final int NUM_RECORDS = 512;
     private static final int NUM_BLOCKS = 8;
     private String fileName;
     private RandomAccessFile raf;
-    private MinHeap<Record> mhRecords;
 
     /**
      * Creates a Parser object, which is meant to go through fileName
@@ -50,46 +48,23 @@ public class Parser {
      * @throws IOException
      *             when EOF has been reached
      */
-    public byte[] getIBuffer() throws IOException {
-
-        ByteBuffer inputBuffer = ByteBuffer.allocate(BLOCK_SIZE);
+    public byte[] getBlock() throws IOException {
+        // allocate space to create bytebuffer
+        ByteBuffer block = ByteBuffer.allocate(BLOCK_SIZE); 
         try {
+            // fill byte buffer with contents of 1st block from fileName.bin
             for (int i = 1; i <= BLOCK_SIZE; i++) {
                 byte b = raf.readByte();
-                inputBuffer.put(b);
-                
+                block.put(b);
             }
- 
         }
         catch (EOFException e) {
             throw new EOFException("End of the file titled, " + fileName
                 + ", has been reached");
         }
-        return inputBuffer.array();
+        return block.array();
     }
-    
-    /**
-     * 
-     * 
-     * @param blocks
-     * @return
-     * @throws IOException
-     */
-    public Record[] bufferToRecords(int blocks) throws IOException {
-        Record[] recArray = new Record[NUM_RECORDS];
-        byte[] block = getIBuffer();
-        ByteBuffer inputBuffer = ByteBuffer.wrap(block);
-        for (int i = 0; i < NUM_RECORDS; i += 8) {
-            Record r = new Record(null);
-            long v = inputBuffer.getLong();
-            double k = inputBuffer.getDouble();
-            r.setKey(k);
-            r.setValue(v);
-            recArray[i] = r;
-        }
-        return recArray;
-    }
-    
+ 
     /**
      * 
      * @return
