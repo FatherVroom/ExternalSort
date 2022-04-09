@@ -1,4 +1,5 @@
 import java.nio.ByteBuffer;
+import org.junit.Assert;
 import student.TestCase;
 
 /**
@@ -26,7 +27,8 @@ public class MinHeapTest extends TestCase {
     public void testHeapSize() {
         assertEquals(0, mh.heapSize());
     }
-    
+
+
     /**
      * Tests that insertion fails on a MinHeap that has reached capacity
      */
@@ -44,7 +46,8 @@ public class MinHeapTest extends TestCase {
         Record overCapRecord = new Record(rec.array());
         assertFalse(mh.insert(overCapRecord));
     }
-    
+
+
     /**
      * Tests that MinHeap properties remain satisfied after inserting new
      * Records
@@ -92,13 +95,14 @@ public class MinHeapTest extends TestCase {
         assertTrue(24.0 == r[2].getKey());
         assertTrue(81.0 == r[3].getKey());
     }
-    
+
+
     /**
      * Tests that MinHeap properties are satisfied after the constructor
      * is called and an unorganized Record array is passed in
      */
     public void testBuildHeap() {
-        //Create unorganized Record[]
+        // Create unorganized Record[]
         ByteBuffer rec = ByteBuffer.allocate(Double.BYTES + Long.BYTES);
         rec.putLong(1);
         rec.putDouble(81);
@@ -115,21 +119,207 @@ public class MinHeapTest extends TestCase {
         rec.putLong(4);
         rec.putDouble(13);
         Record fourthRecord = new Record(rec.array());
-        
-        //Record[] == {81, 17, 24, 13}
+
+        // Record[] == {81, 17, 24, 13}
         r[0] = firstRecord;
         r[1] = secondRecord;
         r[2] = thirdRecord;
         r[3] = fourthRecord;
         MinHeap<Record> testHeap = new MinHeap<Record>(r, 4, 10);
-        
-        //Ensure Record[] satisfied MinHeap properties
-        rec = ByteBuffer.allocate(Double.BYTES + Long.BYTES);
-        rec.putLong(1);
-        rec.putDouble(81);
+
+        // Ensure Record[] satisfied MinHeap properties
         assertTrue(13.0 == r[0].getKey());
         assertTrue(17.0 == r[1].getKey());
         assertTrue(24.0 == r[2].getKey());
         assertTrue(81.0 == r[3].getKey());
+    }
+
+
+    /**
+     * Tests the MinHeap when there are 4 records added and we want to grab the
+     * root of the heap, which is the same thing as the minimum value
+     */
+    public void testRemoveMin() {
+        AssertionError a = null;
+        try {
+            mh.removeMin();
+        }
+        catch (AssertionError e) {
+            a = e;
+        }
+        assertNotNull(a);
+        // Create unorganized Record[]
+        // adds the record k:81, v:1
+        ByteBuffer rec = ByteBuffer.allocate(Double.BYTES + Long.BYTES);
+        rec.putLong(1);
+        rec.putDouble(81);
+        Record firstRecord = new Record(rec.array());
+        // adds the record k:17, v:2
+        rec = ByteBuffer.allocate(Double.BYTES + Long.BYTES);
+        rec.putLong(2);
+        rec.putDouble(17);
+        Record secondRecord = new Record(rec.array());
+        // adds the record k:24, v:3
+        rec = ByteBuffer.allocate(Double.BYTES + Long.BYTES);
+        rec.putLong(3);
+        rec.putDouble(24);
+        Record thirdRecord = new Record(rec.array());
+        // adds the record k:13, v:4
+        rec = ByteBuffer.allocate(Double.BYTES + Long.BYTES);
+        rec.putLong(4);
+        rec.putDouble(13);
+        Record fourthRecord = new Record(rec.array());
+
+        // Record[] == {81, 17, 24, 13}
+        r[0] = firstRecord;
+        r[1] = secondRecord;
+        r[2] = thirdRecord;
+        r[3] = fourthRecord;
+        MinHeap<Record> testHeap = new MinHeap<Record>(r, 4, numRecords);
+        assertEquals(fourthRecord, testHeap.removeMin());
+
+    }
+
+
+    /**
+     * Tests the remove method of the MinHeap when assertion errors are thrown.
+     * This happens when either 2 things occur: An attempt is made to remove a
+     * Record from a position that is less than 1 OR an attempt is made to
+     * remove from a position that is beyond the size of the actual MinHeap
+     */
+    public void testRemoveAssertionErrors() {
+        AssertionError a = null;
+        try {
+            mh.remove(-1);
+        }
+        catch (AssertionError e) {
+            a = e;
+        }
+        assertNotNull("Invalid heap position: position must be 0 or more", a);
+        a = null;
+        try {
+            mh.remove(1);
+        }
+        catch (AssertionError e) {
+            a = e;
+        }
+        assertNotNull("Invalid heap position: position must be less than " + 1,
+            a);
+    }
+
+
+    /**
+     * Tests the remove method when all of the contents of the MinHeap are
+     * removed from the smallest element to the the biggest one
+     */
+    public void testRemove() {
+        // Create unorganized Record[]
+        // adds the record k:81, v:1
+        ByteBuffer rec = ByteBuffer.allocate(Double.BYTES + Long.BYTES);
+        rec.putLong(1);
+        rec.putDouble(81);
+        Record firstRecord = new Record(rec.array());
+        // adds the record k:17, v:2
+        rec = ByteBuffer.allocate(Double.BYTES + Long.BYTES);
+        rec.putLong(2);
+        rec.putDouble(17);
+        Record secondRecord = new Record(rec.array());
+        // adds the record k:24, v:3
+        rec = ByteBuffer.allocate(Double.BYTES + Long.BYTES);
+        rec.putLong(3);
+        rec.putDouble(24);
+        Record thirdRecord = new Record(rec.array());
+        // adds the record k:13, v:4
+        rec = ByteBuffer.allocate(Double.BYTES + Long.BYTES);
+        rec.putLong(4);
+        rec.putDouble(13);
+        Record fourthRecord = new Record(rec.array());
+
+        // Record[] == {81, 17, 24, 13}
+        r[0] = firstRecord;
+        r[1] = secondRecord;
+        r[2] = thirdRecord;
+        r[3] = fourthRecord;
+        MinHeap<Record> testHeap = new MinHeap<Record>(r, 4, numRecords);
+        assertEquals(fourthRecord, testHeap.remove(0));
+        assertEquals(secondRecord, testHeap.remove(0));
+        assertEquals(thirdRecord, testHeap.remove(0));
+        assertEquals(firstRecord, testHeap.remove(0));
+        assertEquals(0, testHeap.heapSize());
+    }
+
+
+    /**
+     * Tests the modify method for a MinHeap when assertion errors are thrown.
+     * This happens when either 2 things occur: An attempt is made to modify a
+     * Record from a position that is less than 1 OR an attempt is made to
+     * modify from a position that is beyond the size of the actual MinHeap
+     */
+    public void testModifyAssertionErrors() {
+        AssertionError a = null;
+        ByteBuffer rec = ByteBuffer.allocate(Double.BYTES + Long.BYTES);
+        rec.putLong(6);
+        rec.putDouble(7);
+        Record modRec = new Record(rec.array());
+        try {
+            mh.modify(-1, modRec);
+        }
+        catch (AssertionError e) {
+            a = e;
+        }
+        assertNotNull("Invalid heap position: position must be 0 or more", a);
+        a = null;
+        try {
+            mh.modify(100, modRec);
+        }
+        catch (AssertionError e) {
+            a = e;
+        }
+        assertNotNull("Invalid heap position: position must be less than " + 1,
+            a);
+    }
+
+
+    /**
+     * Tests the modify method when we attempt to modify the contents of a
+     * MinHeap
+     */
+    public void testModify() {
+        // Create unorganized Record[]
+        // adds the record k:81, v:1
+        ByteBuffer rec = ByteBuffer.allocate(Double.BYTES + Long.BYTES);
+        rec.putLong(1);
+        rec.putDouble(81);
+        Record firstRecord = new Record(rec.array());
+        // adds the record k:17, v:2
+        rec = ByteBuffer.allocate(Double.BYTES + Long.BYTES);
+        rec.putLong(2);
+        rec.putDouble(17);
+        Record secondRecord = new Record(rec.array());
+        // adds the record k:24, v:3
+        rec = ByteBuffer.allocate(Double.BYTES + Long.BYTES);
+        rec.putLong(3);
+        rec.putDouble(24);
+        Record thirdRecord = new Record(rec.array());
+        // adds the record k:13, v:4
+        rec = ByteBuffer.allocate(Double.BYTES + Long.BYTES);
+        rec.putLong(4);
+        rec.putDouble(13);
+        Record fourthRecord = new Record(rec.array());
+
+        // Record[] == {81, 17, 24, 13}
+        r[0] = firstRecord;
+        r[1] = secondRecord;
+        r[2] = thirdRecord;
+        r[3] = fourthRecord;
+        MinHeap<Record> testHeap = new MinHeap<Record>(r, 4, numRecords);
+
+        rec = ByteBuffer.allocate(Double.BYTES + Long.BYTES);
+        rec.putLong(6);
+        rec.putDouble(7);
+        Record modRec = new Record(rec.array());
+        // changes the root of the MinHeap to be k:7, v:6
+        testHeap.modify(0, modRec);
+        assertEquals(modRec, testHeap.remove(0));
     }
 }

@@ -38,20 +38,24 @@ public class Externalsort {
 
     /**
      * @param args
-     *     Command line parameters
+     *            Command line parameters. Takes in the name of the binary file
+     *            we will be parsing through
+     * @throws FileNotFoundException
+     *             if the first argument in args does not exist
      */
-    public static void main(String[] args){
-        try {
-            Parser p = new Parser(args[0]);
-            
+    public static void main(String[] args) throws FileNotFoundException {
+        String fileName = args[0];
+        if (args.length == 1) {
+            try {
+                Parser p = new Parser(args[0]);
+            }
+            catch (FileNotFoundException e) {
+                throw new FileNotFoundException("File titled " + fileName + " could not be found");
+            }
         }
-        catch (FileNotFoundException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+        else {
+            String[] arguments = {fileName, "8"};
+            GenBinaryDataFile.main(arguments);
         }
     }
 
