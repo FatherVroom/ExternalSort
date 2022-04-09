@@ -81,7 +81,7 @@ public class Record implements Comparable<Record> {
      * 
      * @param o
      *            - The Record to be compared.
-     * @return A negative integer, zero, or a positive integer as this employee
+     * @return A negative integer, zero, or a positive integer as this record
      *         is less than, equal to, or greater than the supplied record
      *         object.
      */

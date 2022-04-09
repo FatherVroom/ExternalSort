@@ -5,6 +5,7 @@ public class MinHeap<T extends Comparable<T>> {
     private T[] heap; // Pointer to the heap array
     private int capacity; // Maximum size of the heap
     private int n; // Number of things currently in heap
+    private int deactiveSize; //Number of things in deactivated portion
 
     // Constructor supporting preloading of heap contents
     public MinHeap(T[] h, int heapSize, int capacity) {
@@ -13,9 +14,14 @@ public class MinHeap<T extends Comparable<T>> {
         heap = h;
         n = heapSize;
         this.capacity = capacity;
+        deactiveSize = 0;
         buildHeap();
     }
 
+    // Returns the root element of the heap without removing it
+    public T getRoot() {
+        return heap[0];
+    }
 
     // Return position for left child of pos
     public static int leftChild(int parentPosition) {
@@ -64,6 +70,26 @@ public class MinHeap<T extends Comparable<T>> {
         return true;
     }
 
+    // Insert val to end of heap without incrementing n (effectively not a part
+    // of the heap)
+    public boolean insertAndDeactivate(T key) {
+        if (n >= capacity) {
+            return false;
+        }
+        heap[n + deactiveSize] = key;
+        deactiveSize++;
+        return true;
+    }
+    
+    //Reactivates a logically empty heap by converting the deactivated portion
+    //to the active portion, then rebuilding the heap
+    public void reactivate() {
+        if (deactiveSize > 0) {
+            n = deactiveSize;
+            deactiveSize = 0;
+            buildHeap();
+        }
+    }
 
     // Organize contents of array to satisfy the heap structure
     public void buildHeap() {
@@ -150,6 +176,23 @@ public class MinHeap<T extends Comparable<T>> {
         heap[pos] = newVal;
         update(pos);
     }
+    
+    /**
+     * Swaps the root with the last element in the Heap, decrements size
+     * "deactivating" that new last element (making it effectively not a part
+     * of the heap anymore), and sifts the new root down to its correct 
+     * position in the heap.
+     */
+    public void swapAndDeactivate() {
+        if (n > 0) {
+            n--;
+            swap(0, n); // Swap minimum with last value
+            siftDown(0); // Put new heap root val in correct place
+        }
+        else {
+            throw new AssertionError("Heap is empty; cannot remove");
+        }
+    }
 
 
     // The value at pos has been changed, restore the heap property
@@ -160,7 +203,7 @@ public class MinHeap<T extends Comparable<T>> {
 
 
     // swaps the elements at two positions
-    private void swap(int pos1, int pos2) {
+    public void swap(int pos1, int pos2) {
         T temp = heap[pos1];
         heap[pos1] = heap[pos2];
         heap[pos2] = temp;

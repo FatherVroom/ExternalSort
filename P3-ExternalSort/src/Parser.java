@@ -1,4 +1,5 @@
 import java.io.EOFException;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
@@ -15,6 +16,8 @@ import java.nio.ByteBuffer;
  */
 public class Parser {
     private static final int BLOCK_SIZE = 8192;
+    private static final int NUM_RECORDS = 512;
+    private static final int MAX_HEAP_SIZE = 4096;
     private String fileName;
     private RandomAccessFile raf;
 
@@ -67,6 +70,124 @@ public class Parser {
         return block.array();
     }
 
+    /**
+     * 
+     * 
+     * @throws IOException
+     */
+//    public void replacementSelectionOLD() throws IOException {
+//        //PHASE 1: Putting very first block into MinHeap
+//        
+//        //Read first block, place into inputBuffer
+//        byte[] nextBlock = getBlock();
+//        InputBuffer inBuf = new InputBuffer(nextBlock);
+//        //Convert bytes of Input Buffer to Records
+//        inBuf.fillRecords();
+//        //Fill MinHeap with this first block of records in Input Buffer
+//        MinHeap<Record> recHeap = new MinHeap<Record>(inBuf.getRecords(), 
+//            NUM_RECORDS, NUM_RECORDS);
+//        
+//        //PHASE 2: Replacement Selection
+//        
+//        //Open a new File to write the runs to, create OutputBuffer
+//        File runFile = new File("runFile.bin");
+//        runFile.createNewFile();
+//        RandomAccessFile runRaf = new RandomAccessFile(runFile, "rw");
+//        OutputBuffer outBuf = new OutputBuffer();
+//        //Reinitialize Input Buffer with next block of input file
+//        nextBlock = getBlock();
+//        inBuf = new InputBuffer(nextBlock);
+//        //Convert bytes of Input Buffer to Records, store reference
+//        inBuf.fillRecords();
+//        Record[] inBufRecords = inBuf.getRecords();
+//        int currRecord = 0;
+//        //Send first Record (root) to output buffer
+//        Record removedRec = recHeap.removeMin();
+//        outBuf.addRecord(removedRec);
+//        //Perform Replacement Selection until block 8 has been finished or E.O.F.
+//        while ((raf.getFilePointer() != BLOCK_SIZE * 8) || 
+//            (raf.getFilePointer() != raf.length())) {
+//            
+//            //If Input Buffer is at end, refill it
+//            if (currRecord == NUM_RECORDS) {
+//                //Reinitialize Input Buffer with next block of input file
+//                nextBlock = getBlock();
+//                inBuf = new InputBuffer(nextBlock);
+//                //Convert bytes of Input Buffer to Records, store reference
+//                inBuf.fillRecords();
+//                inBufRecords = inBuf.getRecords();
+//                currRecord = 0;
+//            }
+//            
+//            //If next Record >= last Record removed, insert as normal
+//            if (inBufRecords[currRecord].compareTo(removedRec) >= 0) {
+//                recHeap.insert(inBufRecords[currRecord]);
+//                currRecord++;
+//            }
+//            
+//            //Else, insert next Record and deactivate it
+//            else {
+//                recHeap.insertAndDeactivate(inBufRecords[currRecord]);
+//                currRecord++;
+//            }
+//            
+//            
+//        }
+//    }
+    
+    public void replacementSelection() throws IOException {
+        //PHASE 1: Fill 8 Blocks into MinHeap, create 8 block run
+        byte[] nextBlock;
+        InputBuffer inBuf;
+        Record[] heapArray = new Record[MAX_HEAP_SIZE];
+        int heapArrayIndex = 0;
+        
+        //Get block with input buffer, convert to Records, add to heapArray
+        for (int i = 0; i < 8; i++) {
+            nextBlock = getBlock();
+            inBuf = new InputBuffer(nextBlock);
+            inBuf.fillRecords();
+            Record[] blockRecords = inBuf.getRecords();
+            for (int j = 0; j < NUM_RECORDS; j++) {
+                heapArray[heapArrayIndex] = blockRecords[j];
+                heapArrayIndex++;
+            }
+        }
+        
+        //heapArray populated with 8 blocks, create MinHeap with it
+        MinHeap<Record> recHeap = new MinHeap<Record>(heapArray, 
+            MAX_HEAP_SIZE, MAX_HEAP_SIZE);
+        recHeap.buildHeap();
+        
+        //Create Run File and Output Buffer
+        File runFile = new File("runFile.bin");
+        runFile.createNewFile();
+        RandomAccessFile runRaf = new RandomAccessFile(runFile, "rw");
+        OutputBuffer outBuf = new OutputBuffer();
+        
+        //CASE: Input File <= 8 Blocks, so just write from the heap
+        if (getNumOfBlocks() <= 8.0) {
+            while (recHeap.heapSize() != 0) {
+                //Flush output buffer if necessary
+                if (outBuf.isFull()) {
+                    outBuf.writeToRunFile(runRaf);
+                    outBuf = new OutputBuffer();
+                }
+                //Write next minimum from Heap to Output Buffer
+                Record removedRec = recHeap.removeMin();
+                outBuf.addRecord(removedRec);
+            }
+            //runFile should be sorted, calling code will rename file and 
+            //terminate program
+            return;
+        }
+        
+        //CASE: Input File >= 8 Blocks, replacement selection necessary
+        else {
+            //Implement replacement selection here
+        }
+    }
+    
 
     /**
      * Gets the number of blocks to be parsed through in a file
