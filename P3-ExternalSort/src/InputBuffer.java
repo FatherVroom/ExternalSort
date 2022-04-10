@@ -11,10 +11,9 @@ import java.nio.ByteBuffer;
  */
 public class InputBuffer {
     private Record[] records;
-    private static final int BUFFER_CAPACITY = 8192;
     private static final int NUM_RECORDS = 512;
     private byte[] block;
-    private int size;
+    private int numOfRecords;
 
     /**
      * Constructor for an InputBuffer
@@ -24,7 +23,7 @@ public class InputBuffer {
      */
     public InputBuffer(byte[] block) {
         this.block = block;
-        size = NUM_RECORDS;
+        numOfRecords = 0;
         records = new Record[NUM_RECORDS];
     }
 
@@ -33,19 +32,14 @@ public class InputBuffer {
      * Fills the InputBuffer with an array of Records.
      */
     public void fillRecords() {
+
         // make bytebuffer out of the block of code that is passed in
         ByteBuffer b = ByteBuffer.wrap(block);
-        int recCounter = 0;
         // cycle through the block of 8,192 bytes and convert to record objects
-        for (int i = 0; i < BUFFER_CAPACITY; i += 16) {
-            byte[] newRecord = new byte[16]; // create byte array to store a
-                                             // record
-            b.get(newRecord, i, 16); // store block contents into the byte array
-                                     // newRecord
-            Record r = new Record(newRecord); // store the byte array into an
-                                              // actual Record
-            records[recCounter] = r; // place the record in the record array
-            recCounter++;
+        for (int i = 0; i < NUM_RECORDS; i++) {
+            Record r = new Record(b.getDouble(), b.getLong());
+            records[i] = r;
+            numOfRecords++;
         }
     }
 
@@ -71,6 +65,6 @@ public class InputBuffer {
      */
     public boolean isEmpty() {
         // use for when we want to start filling up input buffer again
-        return size == 0;
+        return numOfRecords == 0;
     }
 }

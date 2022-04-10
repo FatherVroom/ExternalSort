@@ -10,13 +10,13 @@ import java.nio.ByteBuffer;
  * @version 2022-04-09
  */
 public class OutputBuffer {
-    //Fields
+    // Fields
     private Record[] records;
     private static final int BUFFER_CAPACITY = 8192;
     private static final int RECORD_CAPACITY = 512;
     private int size;
-    
-    //Constructors
+
+    // Constructors
     /**
      * Creates new empty OutputBuffer
      */
@@ -24,12 +24,14 @@ public class OutputBuffer {
         records = new Record[RECORD_CAPACITY];
         size = 0;
     }
-    
-    //Methods
+
+
+    // Methods
     /**
      * Adds a Record object to the Record array backing this OutputBuffer
      * 
-     * @param r - The Record to be added
+     * @param r
+     *            - The Record to be added
      */
     public void addRecord(Record r) {
         if (size < RECORD_CAPACITY) {
@@ -37,7 +39,8 @@ public class OutputBuffer {
             size++;
         }
     }
-    
+
+
     /**
      * Creates an array of this full OutputBuffer's Records in byte form
      * 
@@ -46,11 +49,11 @@ public class OutputBuffer {
     public byte[] convertRecsToByteForm() {
         byte[] recsByteForm = new byte[BUFFER_CAPACITY];
         int byteArrIndex = 0;
-        //Loop through all Record objects, storing their byte form
+        // Loop through all Record objects, storing their byte form
         for (int i = 0; i < RECORD_CAPACITY; i++) {
             Record nextRec = records[i];
             byte[] byteForm = nextRec.getCompleteRecord();
-            //Loop through byte form, storing in recsByteForm
+            // Loop through byte form, storing in recsByteForm
             for (int j = 0; j < 16; j++) {
                 recsByteForm[byteArrIndex] = byteForm[j];
                 byteArrIndex++;
@@ -58,12 +61,14 @@ public class OutputBuffer {
         }
         return recsByteForm;
     }
-    
+
+
     public void writeToRunFile(RandomAccessFile raf) throws IOException {
         byte[] recsByteForm = convertRecsToByteForm();
         raf.write(recsByteForm);
     }
-    
+
+
     /**
      * Checks whether this buffer is at capacity.
      * 

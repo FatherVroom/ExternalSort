@@ -1,5 +1,4 @@
 import java.nio.ByteBuffer;
-import org.junit.Assert;
 import student.TestCase;
 
 /**
@@ -25,7 +24,48 @@ public class MinHeapTest extends TestCase {
 
 
     public void testHeapSize() {
+        ByteBuffer rec = ByteBuffer.allocate(Double.BYTES + Long.BYTES);
         assertEquals(0, mh.heapSize());
+        // placement of record 1
+        rec.putLong(1);
+        rec.putDouble(81);
+        Record firstRecord = new Record(rec.array());
+        mh.insert(firstRecord);
+        assertEquals(1, mh.heapSize());
+        assertTrue(81.0 == r[0].getKey());
+
+        // placement of record 2
+        rec = ByteBuffer.allocate(Double.BYTES + Long.BYTES);
+        rec.putLong(2);
+        rec.putDouble(17);
+        Record secondRecord = new Record(rec.array());
+        mh.insert(secondRecord);
+        assertEquals(2, mh.heapSize());
+        assertTrue(17.0 == r[0].getKey());
+        assertTrue(81.0 == r[1].getKey());
+
+        // placement of record 3
+        rec = ByteBuffer.allocate(Double.BYTES + Long.BYTES);
+        rec.putLong(3);
+        rec.putDouble(24);
+        Record thirdRecord = new Record(rec.array());
+        mh.insert(thirdRecord);
+        assertEquals(3, mh.heapSize());
+        assertTrue(17.0 == r[0].getKey());
+        assertTrue(81.0 == r[1].getKey());
+        assertTrue(24.0 == r[2].getKey());
+
+        // placement of record 4
+        rec = ByteBuffer.allocate(Double.BYTES + Long.BYTES);
+        rec.putLong(4);
+        rec.putDouble(13);
+        Record fourthRecord = new Record(rec.array());
+        mh.insert(fourthRecord);
+        assertEquals(4, mh.heapSize());
+        assertEquals(fourthRecord, mh.getRoot());
+        assertEquals(fourthRecord, mh.removeMin());
+        assertEquals(secondRecord, mh.getRoot());
+        assertEquals(secondRecord, mh.removeMin());
     }
 
 

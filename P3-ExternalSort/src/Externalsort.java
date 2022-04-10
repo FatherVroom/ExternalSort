@@ -35,28 +35,27 @@ import java.nio.ByteBuffer;
 // letter of this restriction.
 
 public class Externalsort {
-    
+
     /**
      * @param args
      *            Command line parameters. Takes in the name of the binary file
      *            we will be parsing through
-     * @throws FileNotFoundException
-     *             if the first argument in args does not exist
+     * @throws IOException 
      */
-    public static void main(String[] args) throws FileNotFoundException {
+    public static void main(String[] args) throws IOException {
         String fileName = args[0];
         if (args.length == 1) {
             try {
                 Parser p = new Parser(args[0]);
             }
             catch (FileNotFoundException e) {
-                throw new FileNotFoundException("File titled " + fileName + " could not be found");
+                throw new FileNotFoundException("File titled " + fileName
+                    + " could not be found");
             }
         }
         else {
-            String[] arguments = {fileName, "8"};
+            String[] arguments = { fileName, "8" };
             GenBinaryDataFile.main(arguments);
         }
     }
-
 }

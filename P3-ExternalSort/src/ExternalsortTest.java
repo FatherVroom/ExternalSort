@@ -1,4 +1,5 @@
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import student.TestCase;
 
 /**
@@ -25,7 +26,7 @@ public class ExternalsortTest extends TestCase {
         try {
             Externalsort.main(fakeArgs);
         }
-        catch (FileNotFoundException e) {
+        catch (IOException e) {
             d = e;
         }
         assertNotNull(d);

@@ -21,27 +21,24 @@ public class ParserTest extends TestCase {
     /**
      * Sets up the ParserTest so that we have a parser with the file
      * "binaryInputTest.bin", which is a single block of 512 records
+     * 
+     * @throws IOException
      */
-    public void setUp() {
+    public void setUp() throws IOException {
         // "binaryInputTest.bin" is the name of the binary data file being
         // created
         fileName = "binaryInputTest.bin";
         badFileName = "FakeSource.bin";
         // "binaryInputTest.bin" will only contain 1 block of data, or 512
         // records
-        numOfBlocks = "1";
+        numOfBlocks = "8";
         args = new String[2];
         args[0] = fileName;
         args[1] = numOfBlocks;
         // creates binaryInputTest.bin, which is 1 block of 512 records
         GenBinaryDataFile.main(args);
-        try {
-            // creation of Parser that goes through "binaryInputTest.bin"
-            p = new Parser(fileName);
-        }
-        catch (FileNotFoundException e) {
-            e.printStackTrace(); // should not execute
-        }
+        // creation of Parser that goes through "binaryInputTest.bin"
+        p = new Parser(fileName);
     }
 
 
@@ -72,17 +69,21 @@ public class ParserTest extends TestCase {
      */
     public void testGetBlock() {
         byte[] block = null;
+        byte[] block2 = null;
         Exception d = null;
         try {
             // creates a byte array of the block in the binary file.
             block = p.getBlock();
+            block2 = p.getBlock();
         }
         catch (IOException e) {
-            e.printStackTrace();
             d = e;
         }
         assertNull(d);
         assertEquals(8192, block.length);
+        assertEquals(8192, block2.length);
+        assertNotSame(block, block2);
+
     }
 
 
@@ -111,41 +112,4 @@ public class ParserTest extends TestCase {
             + ", has been reached. File must have at least 1 block of records (512 records).",
             d);
     }
-
-
-//    /**
-//     * Tests the getNumOfBlocks() method when there is just 1 block of binary
-//     * and also when there is 8 blocks of binary
-//     */
-//    public void testGetNumOfBlocks() {
-//        Exception d = null;
-//        // creation of a binary file which has 8 blocks of data
-//        String[] bigArgs = { "bigFile.bin", "8" };
-//        GenBinaryDataFile.main(bigArgs);
-//        Parser bigParser = null;
-//        // creation of a parser that would go through the 8 block binary file
-//        try {
-//            bigParser = new Parser("bigFile.bin");
-//        }
-//        catch (FileNotFoundException e1) {
-//            d = e1;
-//        }
-//        assertNull(d);
-//        long blockSize1 = 0;
-//        long blockSize8 = 0;
-//        try {
-//            // gets block size of a file with 1 block
-//            blockSize1 = p.getNumOfBlocks();
-//            // gets block size of a file with 8 blocks
-//            blockSize8 = bigParser.getNumOfBlocks();
-//        }
-//        catch (IOException e2) {
-//            d = e2;
-//            e2.printStackTrace();
-//        }
-//        assertNull(d);
-//        assertEquals(1, blockSize1);
-//        assertEquals(8, blockSize8);
-//    }
-    
 }

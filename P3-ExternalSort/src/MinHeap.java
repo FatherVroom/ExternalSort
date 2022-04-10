@@ -5,7 +5,7 @@ public class MinHeap<T extends Comparable<T>> {
     private T[] heap; // Pointer to the heap array
     private int capacity; // Maximum size of the heap
     private int n; // Number of things currently in heap
-    private int deactiveSize; //Number of things in deactivated portion
+    private int deactiveSize; // Number of things in deactivated portion
 
     // Constructor supporting preloading of heap contents
     public MinHeap(T[] h, int heapSize, int capacity) {
@@ -18,10 +18,12 @@ public class MinHeap<T extends Comparable<T>> {
         buildHeap();
     }
 
+
     // Returns the root element of the heap without removing it
     public T getRoot() {
         return heap[0];
     }
+
 
     // Return position for left child of pos
     public static int leftChild(int parentPosition) {
@@ -41,10 +43,10 @@ public class MinHeap<T extends Comparable<T>> {
     }
 
 
-    // Forcefully changes the heap size. May require build-heap afterwards
-    public void setHeapSize(int newSize) {
-        n = newSize;
-    }
+//    // Forcefully changes the heap size. May require build-heap afterwards
+//    public void setHeapSize(int newSize) {
+//        n = newSize;
+//    }
 
 
     // Return current size of the heap
@@ -70,6 +72,7 @@ public class MinHeap<T extends Comparable<T>> {
         return true;
     }
 
+
     // Insert val to end of heap without incrementing n (effectively not a part
     // of the heap)
     public boolean insertAndDeactivate(T key) {
@@ -80,9 +83,10 @@ public class MinHeap<T extends Comparable<T>> {
         deactiveSize++;
         return true;
     }
-    
-    //Reactivates a logically empty heap by converting the deactivated portion
-    //to the active portion, then rebuilding the heap
+
+
+    // Reactivates a logically empty heap by converting the deactivated portion
+    // to the active portion, then rebuilding the heap
     public void reactivate() {
         if (deactiveSize > 0) {
             n = deactiveSize;
@@ -90,6 +94,7 @@ public class MinHeap<T extends Comparable<T>> {
             buildHeap();
         }
     }
+
 
     // Organize contents of array to satisfy the heap structure
     public void buildHeap() {
@@ -176,11 +181,12 @@ public class MinHeap<T extends Comparable<T>> {
         heap[pos] = newVal;
         update(pos);
     }
-    
+
+
     /**
      * Swaps the root with the last element in the Heap, decrements size
      * "deactivating" that new last element (making it effectively not a part
-     * of the heap anymore), and sifts the new root down to its correct 
+     * of the heap anymore), and sifts the new root down to its correct
      * position in the heap.
      */
     public void swapAndDeactivate() {
