@@ -31,9 +31,12 @@ public class Parser {
      */
     public Parser(String fileName) throws IOException {
         this.fileName = fileName;
+        // current position begins at 0, and will be incremented by 8191 each
+        // time getBlock() is called on the parser
         currentPos = 0;
         try {
             raf = new RandomAccessFile(fileName, "r");
+            // start the RandomAccessFile at the beginning of the file
             raf.seek(currentPos);
         }
         catch (FileNotFoundException e) {
@@ -70,8 +73,11 @@ public class Parser {
             throw new EOFException("End of the file titled, " + fileName
                 + ", has been reached. File must have at least 1 block of records (512 records).");
         }
+        // increment the current positon by 8191 so that each time getBlock() is
+        // called, we move the RandomAccessFile over to the next block
         currentPos += (BLOCK_SIZE - 1);
         raf.seek(currentPos);
+
         // returns block array after conversion from bytebuffer to byte array
         return block.array();
     }
