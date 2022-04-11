@@ -63,6 +63,12 @@ public class OutputBuffer {
     }
 
 
+    /**
+     * Writes contents of this OutputBuffer to the specified runFile
+     * 
+     * @param raf - The runFile to write the buffer to
+     * @throws IOException
+     */
     public void writeToRunFile(RandomAccessFile raf) throws IOException {
         byte[] recsByteForm = convertRecsToByteForm();
         raf.write(recsByteForm);

@@ -52,7 +52,6 @@ public class InputBuffer {
      * @return records inside the Buffer
      */
     public Record[] getRecords() {
-        // make a precondition to ensure record field has been populated
         return records;
     }
 
@@ -61,7 +60,7 @@ public class InputBuffer {
      * Determines whether there is space in the Buffer for blocks of records to
      * be placed inside of
      * 
-     * @return true of the InputBuffer is empty
+     * @return true if the InputBuffer is empty
      */
     public boolean isEmpty() {
         // use for when we want to start filling up input buffer again

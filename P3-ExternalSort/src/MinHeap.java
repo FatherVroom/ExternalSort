@@ -72,7 +72,36 @@ public class MinHeap<T extends Comparable<T>> {
         return true;
     }
 
-
+    /**
+     * Performs an insertion on an empty root according to replacement 
+     * selection. Inserts key, then handles the cases in which this new
+     * key must be swapped and deactivated, or this new key must simply be
+     * sifted down to its proper position within the heap.
+     * 
+     * @precondition removeMinNoUpdate() has been called, leaving the root null
+     * @param key - The new key to be inserted into the root of the MinHeap
+     * @param deactivate - Whether this new key needs to be moved to the
+     *              inactive portion of the heap
+     */
+    public boolean replacementSelectionInsert(T key, boolean deactivate) {
+        //Check that conditions for this method are met
+        if (n >= capacity || heap[0] != null) {
+            return false;
+        }
+        
+        //Insert key into the empty root
+        heap[0] = key;
+        
+        //Case: key must be moved to inactive portion of heap
+        if (deactivate) {
+            swapAndDeactivate();
+            return true;
+        }
+        //Case: key will remain active in heap, move to correct pos
+        siftDown(0);
+        return true;
+    }
+    
     // Insert val to end of heap without incrementing n (effectively not a part
     // of the heap)
     public boolean insertAndDeactivate(T key) {
@@ -87,12 +116,14 @@ public class MinHeap<T extends Comparable<T>> {
 
     // Reactivates a logically empty heap by converting the deactivated portion
     // to the active portion, then rebuilding the heap
-    public void reactivate() {
+    public boolean reactivate() {
         if (deactiveSize > 0) {
             n = deactiveSize;
             deactiveSize = 0;
             buildHeap();
+            return true;
         }
+        return false;
     }
 
 
@@ -148,6 +179,23 @@ public class MinHeap<T extends Comparable<T>> {
         }
     }
 
+    /**
+     * Remove and return minimum value, leaving the root empty. Preps the
+     * MinHeap for an iteration of replacement selection
+     * 
+     * @return The minimum (root) value of the MinHeap
+     */
+    public T removeMinNoUpdate() {
+        if (n > 0) {
+            T removed = heap[0];
+            heap[0] = null;
+            n--;
+            return removed;
+        }
+        else {
+            throw new AssertionError("Heap is empty; cannot remove");
+        }
+    }
 
     // Remove and return element at specified position
     public T remove(int pos) {

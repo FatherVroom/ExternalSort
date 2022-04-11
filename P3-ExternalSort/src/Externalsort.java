@@ -58,4 +58,15 @@ public class Externalsort {
             GenBinaryDataFile.main(arguments);
         }
     }
+    
+//    public void printToStdOut(String filename) throws FileNotFoundException {
+//        try {
+//            RandomAccessFile output = new RandomAccessFile(filename, "r");
+//            //Unfinished
+//        }
+//        catch (FileNotFoundException e) {
+//            throw new FileNotFoundException("File titled " + filename
+//                + " could not be found");
+//        }
+//    }
 }
