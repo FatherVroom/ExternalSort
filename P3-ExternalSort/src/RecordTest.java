@@ -45,7 +45,7 @@ public class RecordTest extends TestCase {
 
 
     /**
-     * Tests the getValue() method  for the Record class
+     * Tests the getValue() method for the Record class
      */
     public void testGetValue() {
         Record rec = new Record(aBite);

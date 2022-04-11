@@ -3,17 +3,6 @@ import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
 
-/**
- * {Project Description Here}
- */
-
-/**
- * The class containing the main method.
- *
- * @author Aniket Adhikari, Chris Koehler
- * @version 21 March 2022
- */
-
 // On my honor:
 //
 // - I have not used source code obtained from another student,
@@ -34,13 +23,23 @@ import java.nio.ByteBuffer;
 // during the discussion. I have violated neither the spirit nor
 // letter of this restriction.
 
+/**
+ * {Project Description Here}
+ */
+
+/**
+ * The class containing the main method.
+ *
+ * @author Aniket Adhikari, Chris Koehler
+ * @version 21 March 2022
+ */
 public class Externalsort {
 
     /**
      * @param args
      *            Command line parameters. Takes in the name of the binary file
      *            we will be parsing through
-     * @throws IOException 
+     * @throws IOException
      */
     public static void main(String[] args) throws IOException {
         String fileName = args[0];
@@ -58,15 +57,15 @@ public class Externalsort {
             GenBinaryDataFile.main(arguments);
         }
     }
-    
-//    public void printToStdOut(String filename) throws FileNotFoundException {
-//        try {
-//            RandomAccessFile output = new RandomAccessFile(filename, "r");
-//            //Unfinished
-//        }
-//        catch (FileNotFoundException e) {
-//            throw new FileNotFoundException("File titled " + filename
-//                + " could not be found");
-//        }
-//    }
+
+// public void printToStdOut(String filename) throws FileNotFoundException {
+// try {
+// RandomAccessFile output = new RandomAccessFile(filename, "r");
+// //Unfinished
+// }
+// catch (FileNotFoundException e) {
+// throw new FileNotFoundException("File titled " + filename
+// + " could not be found");
+// }
+// }
 }

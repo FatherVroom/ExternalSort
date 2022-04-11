@@ -21,7 +21,7 @@ public class Record implements Comparable<Record> {
     public Record(byte[] record) {
         completeRecord = record;
         ByteBuffer bb = ByteBuffer.wrap(completeRecord);
-        value = bb.slice(0, 8).getLong();
+        value = bb.getLong();
         key = bb.getDouble(8);
     }
 
@@ -75,11 +75,11 @@ public class Record implements Comparable<Record> {
 
 
     public void setKey(double k) { // ** complete in constructor **
-        ByteBuffer bb = ByteBuffer.allocate(8);
+        ByteBuffer bb = ByteBuffer.allocate(Double.BYTES);
         bb.putDouble(k);
         byte[] kb = bb.array();
         int start = 8;
-        for (int i = 0; i < Double.BYTES; i++) {
+        for (int i = 0; i < bb.capacity(); i++) {
             completeRecord[start] = kb[i];
             start++;
         }
@@ -88,10 +88,10 @@ public class Record implements Comparable<Record> {
 
 
     public void setValue(long v) { // ** complete in constructor **
-        ByteBuffer bb = ByteBuffer.allocate(8);
+        ByteBuffer bb = ByteBuffer.allocate(Long.BYTES);
         bb.putLong(v);
         byte[] vb = bb.array();
-        for (int i = 0; i < Long.BYTES; i++) {
+        for (int i = 0; i < bb.capacity(); i++) {
             completeRecord[i] = vb[i];
         }
         value = v;

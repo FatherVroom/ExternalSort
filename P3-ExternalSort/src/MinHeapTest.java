@@ -23,6 +23,64 @@ public class MinHeapTest extends TestCase {
     }
 
 
+    /**
+     * tests both leftChild and rightChild methods
+     */
+    public void testChildren() {
+        ByteBuffer rec = ByteBuffer.allocate(Double.BYTES + Long.BYTES);
+        rec.putLong(0);
+        rec.putDouble(10);
+        Record r1 = new Record(rec.array());
+        mh.insert(r1);
+
+        rec = ByteBuffer.allocate(Double.BYTES + Long.BYTES);
+        rec.putLong(1);
+        rec.putDouble(21);
+        Record r2 = new Record(rec.array());
+        mh.insert(r2);
+
+        rec = ByteBuffer.allocate(Double.BYTES + Long.BYTES);
+        rec.putLong(2);
+        rec.putDouble(9);
+        Record r3 = new Record(rec.array());
+        mh.insert(r3);
+
+        rec = ByteBuffer.allocate(Double.BYTES + Long.BYTES);
+        rec.putLong(3);
+        rec.putDouble(37);
+        Record r4 = new Record(rec.array());
+        mh.insert(r4);
+
+        rec = ByteBuffer.allocate(Double.BYTES + Long.BYTES);
+        rec.putLong(4);
+        rec.putDouble(40);
+        Record r5 = new Record(rec.array());
+        mh.insert(r5);
+
+        rec = ByteBuffer.allocate(Double.BYTES + Long.BYTES);
+        rec.putLong(5);
+        rec.putDouble(81);
+        Record r6 = new Record(rec.array());
+        mh.insert(r6);
+
+        assertEquals(1, MinHeap.leftChild(0));
+        assertEquals(3, MinHeap.leftChild(1));
+        assertEquals(5, MinHeap.leftChild(2));
+        assertEquals(7, MinHeap.leftChild(3));
+        assertEquals(9, MinHeap.leftChild(4));
+        assertEquals(11, MinHeap.leftChild(5));
+        assertEquals(13, MinHeap.leftChild(6));
+
+        assertEquals(2, MinHeap.rightChild(0));
+        assertEquals(4, MinHeap.rightChild(1));
+        assertEquals(6, MinHeap.rightChild(2));
+        assertEquals(8, MinHeap.rightChild(3));
+        assertEquals(10, MinHeap.rightChild(4));
+        assertEquals(12, MinHeap.rightChild(5));
+        assertEquals(14, MinHeap.rightChild(6));
+    }
+
+
     public void testHeapSize() {
         ByteBuffer rec = ByteBuffer.allocate(Double.BYTES + Long.BYTES);
         assertEquals(0, mh.heapSize());
@@ -66,6 +124,14 @@ public class MinHeapTest extends TestCase {
         assertEquals(fourthRecord, mh.removeMin());
         assertEquals(secondRecord, mh.getRoot());
         assertEquals(secondRecord, mh.removeMin());
+    }
+
+
+    /**
+     * Tests the isLeaf method
+     */
+    public void testIsLeaf() {
+
     }
 
 
