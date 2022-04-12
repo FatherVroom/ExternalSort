@@ -1,38 +1,13 @@
 // Min-heap implementation by Patrick Sullivan, based on OpenDSA Heap code
 // Can use `java -ea` (Java's VM arguments) to Enable Assertions
 // These assertions will check valid heap positions
-
-/**
- * 
- * MinHeap class which is meant to hold generic types T. A MinHeap's root is the
- * minimum value in the entire heap. It h as extended abilities that allow for
- * replacement selection.
- * 
- * @author Aniket Adhikari, Chris Koehler
- * @version 04.03.2022
- *
- * @param <T>
- *            is the generic type that is held by the MinHeap
- */
 public class MinHeap<T extends Comparable<T>> {
     private T[] heap; // Pointer to the heap array
     private int capacity; // Maximum size of the heap
     private int n; // Number of things currently in heap
     private int deactiveSize; // Number of things in deactivated portion
 
-    /**
-     * Constructor supporting preloading of heap contents
-     * 
-     * @param h
-     *            the array that is being edited to reflect the actual MinHeap
-     * @param heapSize
-     *            is the number of elements in the heap
-     * @param capacity
-     *            is the number of elements allowed to be in the heap. heapSize
-     *            is not allowed to surpass this. Capacity is also not allowed
-     *            to surpass the size the length of the array passed in earlier
-     *            as a parameter
-     */
+    // Constructor supporting preloading of heap contents
     public MinHeap(T[] h, int heapSize, int capacity) {
         assert capacity <= h.length : "capacity is beyond array limits";
         assert heapSize <= capacity : "Heap size is beyond max";
@@ -44,96 +19,49 @@ public class MinHeap<T extends Comparable<T>> {
     }
 
 
-    /**
-     * Returns the root element of the heap without removing it
-     * 
-     * @return root element of the MinHeap
-     */
+    // Returns the root element of the heap without removing it
     public T getRoot() {
         return heap[0];
     }
 
 
-    /**
-     * Return position for left child of pos
-     * 
-     * @param parentPosition
-     *            is the location of the parent of the child we are trying to
-     *            determine the position of
-     * @return position of the left child
-     */
+    // Return position for left child of pos
     public static int leftChild(int parentPosition) {
         return 2 * parentPosition + 1;
     }
 
 
-    /**
-     * Return position for right child of pos
-     * 
-     * @param parentPosition
-     *            is the location of the parent of the child we are trying to
-     *            determine the position of
-     * @return position of the right child
-     */
+    // Return position for right child of pos
     public static int rightChild(int parentPosition) {
         return 2 * parentPosition + 2;
     }
 
 
-    /**
-     * Return position for the parent of pos
-     * 
-     * @param childPosition
-     *            is the location of the child of the parent we are trying to
-     *            determine the position of
-     * @return position for the parent of pos
-     */
+    // Return position for the parent of pos
     public static int parent(int childPosition) {
         return (childPosition - 1) / 2;
     }
 
-// // Forcefully changes the heap size. May require build-heap afterwards
-// public void setHeapSize(int newSize) {
-// n = newSize;
-// }
+
+//    // Forcefully changes the heap size. May require build-heap afterwards
+//    public void setHeapSize(int newSize) {
+//        n = newSize;
+//    }
 
 
-    /**
-     * Gets the number of items in the heap
-     * 
-     * @return current size of the heap
-     */
+    // Return current size of the heap
     public int heapSize() {
         return n;
     }
 
 
-    /**
-     * Return true if pos a leaf position, false otherwise
-     * 
-     * @param pos
-     *            is the position of the heap element that we are determining is
-     *            a leaf or not. A leaf would be an element that has no
-     *            children, left or right.
-     * @return true if the element at the specified position is a leaf, false
-     *         otherwise
-     */
+    // Return true if pos a leaf position, false otherwise
     public boolean isLeaf(int pos) {
         return (n / 2 <= pos) && (pos < n);
     }
 
 
-    /**
-     * Inserts an element of type T into the heap. The element is placed at the
-     * end of the heap (last position) and is subsequently sifted up so that the
-     * element is in the right place
-     * 
-     * @param key
-     *            element to be inserted into the heap
-     * @return if the insertion was successful or not. An unsuccessful,
-     *         insertion would occur if we are trying to insert an element into
-     *         the heap
-     */
+    // Insert val into heap
     public boolean insert(T key) {
         if (n >= capacity) {
             return false;
@@ -144,65 +72,51 @@ public class MinHeap<T extends Comparable<T>> {
         return true;
     }
 
-
     /**
-     * Performs an insertion on an empty root according to replacement
+     * Performs an insertion on an empty root according to replacement 
      * selection. Inserts key, then handles the cases in which this new
      * key must be swapped and deactivated, or this new key must simply be
      * sifted down to its proper position within the heap.
      * 
      * @precondition removeMinNoUpdate() has been called, leaving the root null
-     * @param key
-     *            - The new key to be inserted into the root of the MinHeap
-     * @param deactivate
-     *            - Whether this new key needs to be moved to the
-     *            inactive portion of the heap
+     * @param key - The new key to be inserted into the root of the MinHeap
+     * @param deactivate - Whether this new key needs to be moved to the
+     *              inactive portion of the heap
      */
     public boolean replacementSelectionInsert(T key, boolean deactivate) {
-        // Check that conditions for this method are met
+        //Check that conditions for this method are met
         if (n >= capacity || heap[0] != null) {
             return false;
         }
-
-        // Insert key into the empty root
+        
+        //Insert key into the empty root
         heap[0] = key;
-
-        // Case: key must be moved to inactive portion of heap
+        n++;
+        
+        //Case: key must be moved to inactive portion of heap
         if (deactivate) {
             swapAndDeactivate();
             return true;
         }
-        // Case: key will remain active in heap, move to correct pos
+        //Case: key will remain active in heap, move to correct pos
         siftDown(0);
         return true;
     }
+    
+    // Insert val to end of heap without incrementing n (effectively not a part
+    // of the heap)
+//    public boolean insertAndDeactivate(T key) {
+//        if (n >= capacity) {
+//            return false;
+//        }
+//        heap[n + deactiveSize] = key;
+//        deactiveSize++;
+//        return true;
+//    }
 
 
-    /**
-     * Insert val to end of heap without incrementing n (effectively not a part
-     * of the heap)
-     * 
-     * @param key
-     *            item to be inserted into mean heap and deactivate
-     * @return true if the insertion was successful
-     */
-    public boolean insertAndDeactivate(T key) {
-        if (n >= capacity) {
-            return false;
-        }
-        heap[n + deactiveSize] = key;
-        deactiveSize++;
-        return true;
-    }
-
-
-    /**
-     * 
-     * Reactivates a logically empty heap by converting the deactivated portion
-     * to the active portion, then rebuilding the heap
-     * 
-     * @return whether the reactivation of the heap was successful or not
-     */
+    // Reactivates a logically empty heap by converting the deactivated portion
+    // to the active portion, then rebuilding the heap
     public boolean reactivate() {
         if (deactiveSize > 0) {
             n = deactiveSize;
@@ -214,9 +128,7 @@ public class MinHeap<T extends Comparable<T>> {
     }
 
 
-    /**
-     * Organize contents of array to satisfy the heap structure
-     */
+    // Organize contents of array to satisfy the heap structure
     public void buildHeap() {
         for (int i = parent(n - 1); i >= 0; i--) {
             siftDown(i);
@@ -224,12 +136,7 @@ public class MinHeap<T extends Comparable<T>> {
     }
 
 
-    /**
-     * Moves an element down to its correct place
-     * 
-     * @param pos
-     *            position of element that is being sifted down
-     */
+    // Moves an element down to its correct place
     public void siftDown(int pos) {
         assert (0 <= pos && pos < n) : "Invalid heap position";
         while (!isLeaf(pos)) {
@@ -246,12 +153,7 @@ public class MinHeap<T extends Comparable<T>> {
     }
 
 
-    /**
-     * Moves an element up to its correct place
-     * 
-     * @param pos
-     *            position of element that is being sifted down
-     */
+    // Moves an element up to its correct place
     public void siftUp(int pos) {
         assert (0 <= pos && pos < n) : "Invalid heap position";
         while (pos > 0) {
@@ -265,11 +167,7 @@ public class MinHeap<T extends Comparable<T>> {
     }
 
 
-    /**
-     * Remove and return minimum value
-     * 
-     * @return the minimum value of the MinHeap, which is also the root
-     */
+    // Remove and return minimum value
     public T removeMin() {
         if (n > 0) {
             n--;
@@ -281,7 +179,6 @@ public class MinHeap<T extends Comparable<T>> {
             throw new AssertionError("Heap is empty; cannot remove");
         }
     }
-
 
     /**
      * Remove and return minimum value, leaving the root empty. Preps the
@@ -301,14 +198,7 @@ public class MinHeap<T extends Comparable<T>> {
         }
     }
 
-
-    /**
-     * Remove and return element at specified position
-     * 
-     * @param pos
-     *            the position of the element that is being removed
-     * @return the element at the specified positiion
-     */
+    // Remove and return element at specified position
     public T remove(int pos) {
         if (pos < 0) {
             throw new AssertionError(
@@ -327,14 +217,7 @@ public class MinHeap<T extends Comparable<T>> {
     }
 
 
-    /**
-     * Modify the value at the given position
-     * 
-     * @param pos
-     *            is the position of the element being modified
-     * @param newVal
-     *            is the value we're placing into the specified position
-     */
+    // Modify the value at the given position
     public void modify(int pos, T newVal) {
         if (pos < 0) {
             throw new AssertionError(
@@ -355,10 +238,11 @@ public class MinHeap<T extends Comparable<T>> {
      * of the heap anymore), and sifts the new root down to its correct
      * position in the heap.
      */
-    private void swapAndDeactivate() {
+    public void swapAndDeactivate() {
         if (n > 0) {
             n--;
             swap(0, n); // Swap minimum with last value
+            deactiveSize++;
             siftDown(0); // Put new heap root val in correct place
         }
         else {
@@ -367,27 +251,14 @@ public class MinHeap<T extends Comparable<T>> {
     }
 
 
-    /**
-     * The value at pos has been changed, restore the heap property
-     * 
-     * @param pos
-     *            is the position of the element being updated
-     */
+    // The value at pos has been changed, restore the heap property
     private void update(int pos) {
         siftUp(pos); // priority goes up
         siftDown(pos); // unimportant goes down
     }
 
 
-    /**
-     * swaps the elements at two positions
-     * 
-     * @param pos1
-     *            position of element being placed at position pos2
-     * 
-     * @param pos2
-     *            position of element being placed at position pos1
-     */
+    // swaps the elements at two positions
     public void swap(int pos1, int pos2) {
         T temp = heap[pos1];
         heap[pos1] = heap[pos2];
@@ -395,15 +266,7 @@ public class MinHeap<T extends Comparable<T>> {
     }
 
 
-    /**
-     * does fundamental comparison used for checking heap validity
-     * 
-     * @param pos1
-     *            check if this value is less than pos2
-     * @param pos2
-     *            checks if this value is more than pos1
-     * @return if pos1 is less than pos2
-     */
+    // does fundamental comparison used for checking heap validity
     private boolean isLessThan(int pos1, int pos2) {
         return heap[pos1].compareTo(heap[pos2]) < 0;
     }
