@@ -35,6 +35,7 @@ public class ParserTest extends TestCase {
         args = new String[2];
         args[0] = fileName;
         args[1] = numOfBlocks;
+        args[2] = "random";
         // creates binaryInputTest.bin, which is 1 block of 512 records
         GenBinaryDataFile.main(args);
         // creation of Parser that goes through "binaryInputTest.bin"
@@ -123,7 +124,7 @@ public class ParserTest extends TestCase {
      * @throws IOException
      */
     public void testReplacementSelectionCaseOne() throws IOException {
-        String[] args = { "caseOneFile.bin", "8" };
+        String[] args = { "caseOneFile.bin", "8", "random" };
         GenBinaryDataFile.main(args);
         Parser pc1 = new Parser(args[0]);
         pc1.replacementSelection();

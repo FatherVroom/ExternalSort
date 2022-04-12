@@ -36,26 +36,63 @@ public class GenBinaryDataFile {
      * argument will be the name of the new generic file and the second argument
      * will be the number of blocks
      * 
+     * First param is filename of File to be created
+     * Second param is number of blocks to be created in file
+     * Third param is one of the following types of files to be created:
+     *      "random" - randomly populates file
+     *      "sorted" - populates the file in sorted order
+     *      "reverseSorted" - populates the file in reverse sorted order
+     * 
      * @param args
      */
     public static void main(String args[]) {
         try {
             long val;
             double val2;
-            assert (args.length == 2) : "\nUsage: GenBinaryDataFile <filename> <size>"
-                + "\nOptions \nSize is measured in blocks of 8192 bytes";
+            assert (args.length == 3) : "\nUsage: GenBinaryDataFile <filename> <size>"
+                + " <genType>\nOptions \nSize is measured in blocks of 8192 bytes";
 
             int filesize = Integer.parseInt(args[1]); // Size of file in blocks
             DataOutputStream file = new DataOutputStream(
                 new BufferedOutputStream(new FileOutputStream(args[0])));
 
-            for (int i = 0; i < filesize; i++)
-                for (int j = 0; j < NumRecs; j++) {
-                    val = (long)(randLong());
-                    file.writeLong(val);
-                    val2 = (double)(randDouble());
-                    file.writeDouble(val2);
-                }
+            //Generate random file
+            if (args[3].equals("random")) {
+                for (int i = 0; i < filesize; i++)
+                    for (int j = 0; j < NumRecs; j++) {
+                        val = (long)(randLong());
+                        file.writeLong(val);
+                        val2 = (double)(randDouble());
+                        file.writeDouble(val2);
+                    }
+            }
+            
+            //Generate sorted file
+            else if (args[3].equals("sorted")) {
+                val = 0;
+                val2 = 0.0;
+                for (int i = 0; i < filesize; i++)
+                    for (int j = 0; j < NumRecs; j++) {
+                        file.writeLong(val);
+                        val++;
+                        file.writeDouble(val2);
+                        val2 += 0.0001;
+                    }
+            }
+            
+            //Generate reverse sorted file
+            else if (args[3].equals("reverseSorted")) {
+                val = 0;
+                Double d = Double.MAX_VALUE;
+                val2 = d.doubleValue();
+                for (int i = 0; i < filesize; i++)
+                    for (int j = 0; j < NumRecs; j++) {
+                        file.writeLong(val);
+                        val++;
+                        file.writeDouble(val2);
+                        val2 -= 0.0001;
+                    }
+            }
 
             file.flush();
             file.close();

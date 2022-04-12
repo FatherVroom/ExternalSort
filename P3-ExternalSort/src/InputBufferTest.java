@@ -17,7 +17,7 @@ public class InputBufferTest extends TestCase {
      * Set up for the test
      */
     public void setUp() {
-        String args[] = { "sampleInput16.bin", "8" };
+        String args[] = { "sampleInput16.bin", "8", "random" };
         GenBinaryDataFile.main(args);
         try {
             p = new Parser(args[0]);
