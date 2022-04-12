@@ -53,7 +53,7 @@ public class OutputBufferTest extends TestCase {
         GenBinaryDataFile.main(args);
         Parser p = new Parser(args[0]);
         // convert binary to bytes
-        byte[] originalBytes = p.getBlock();
+        byte[] originalBytes = p.getNextByteBlock();
         InputBuffer inBuff = new InputBuffer(originalBytes);
         // convert bytes to records
         inBuff.fillRecords();

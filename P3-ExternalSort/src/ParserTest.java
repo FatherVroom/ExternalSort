@@ -73,8 +73,8 @@ public class ParserTest extends TestCase {
         Exception d = null;
         try {
             // creates a byte array of the block in the binary file.
-            block = p.getBlock();
-            block2 = p.getBlock();
+            block = p.getNextByteBlock();
+            block2 = p.getNextByteBlock();
         }
         catch (IOException e) {
             d = e;
@@ -101,7 +101,7 @@ public class ParserTest extends TestCase {
             FileWriter fw = new FileWriter(f);
             // puts in fake file into a parser
             Parser bp = new Parser(badFileName);
-            bp.getBlock();
+            bp.getNextByteBlock();
         }
         catch (Exception e) {
             d = e;
@@ -111,5 +111,21 @@ public class ParserTest extends TestCase {
         assertNotNull("End of the file titled, " + badFileName
             + ", has been reached. File must have at least 1 block of records (512 records).",
             d);
+    }
+
+
+    /**
+     * Tests the replacementSelection method in Parser in a case where there is
+     * 8 blocks of data or less to sort. This should be as simple as getting the
+     * minimum record from the top of the heap and putting it into an output
+     * buffer
+     * 
+     * @throws IOException
+     */
+    public void testReplacementSelectionCaseOne() throws IOException {
+        String[] args = { "caseOneFile.bin", "8" };
+        GenBinaryDataFile.main(args);
+        Parser pc1 = new Parser(args[0]);
+        pc1.replacementSelection();
     }
 }

@@ -428,4 +428,32 @@ public class MinHeapTest extends TestCase {
         testHeap.modify(0, modRec);
         assertEquals(modRec, testHeap.remove(0));
     }
+
+
+    /**
+     * Testing part of the replacement selection in which we have a file of 8 or
+     * more blocks and are attempting to fill the minheap with as much records
+     * as we can. The main thing being tested here is if the minheap retains its
+     * status as a minheap by ensuring parents are always greater than the
+     * children
+     */
+    public void testMinHeapFilling() {
+        Double[] d = new Double[10];
+        MinHeap<Double> mhd = new MinHeap<Double>(d, 0, d.length);
+        mhd.insert(6.0);
+        mhd.insert(5.0);
+        mhd.insert(2.0);
+        mhd.insert(1.0);
+        mhd.insert(4.0);
+        mhd.insert(3.0);
+        mhd.insert(0.0);
+        assertEquals(0.0, mhd.getRoot(), 0.01);
+        for (int i = 0; i < mhd.heapSize(); i++) {
+            if (!mhd.isLeaf(i)) {
+                double parent = d[i];
+                assertTrue(parent < d[MinHeap.leftChild(i)]);
+                assertTrue(parent < d[MinHeap.rightChild(i)]);
+            }
+        }
+    }
 }

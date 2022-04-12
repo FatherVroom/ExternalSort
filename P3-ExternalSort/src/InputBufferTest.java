@@ -21,7 +21,7 @@ public class InputBufferTest extends TestCase {
         GenBinaryDataFile.main(args);
         try {
             p = new Parser(args[0]);
-            ib = new InputBuffer(p.getBlock());
+            ib = new InputBuffer(p.getNextByteBlock());
         }
         catch (IOException e) {
             e.printStackTrace();
