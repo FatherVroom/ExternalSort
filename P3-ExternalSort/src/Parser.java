@@ -312,14 +312,16 @@ public class Parser {
 
         // Reactivate and empty heap if necessary
         if (mh.reactivate()) {
-            // Flush output buffer if necessary
-            if (outBuf.isFull()) {
-                outBuf.writeToRunFile(runRaf);
-                outBuf = new OutputBuffer();
+            while (mh.heapSize() != 0) {
+                // Flush output buffer if necessary
+                if (outBuf.isFull()) {
+                    outBuf.writeToRunFile(runRaf);
+                    outBuf = new OutputBuffer();
+                }
+                // Write next minimum from Heap to Output Buffer
+                removedRec = mh.removeMin();
+                outBuf.addRecord(removedRec);
             }
-            // Write next minimum from Heap to Output Buffer
-            removedRec = mh.removeMin();
-            outBuf.addRecord(removedRec);
         }
     }
 
