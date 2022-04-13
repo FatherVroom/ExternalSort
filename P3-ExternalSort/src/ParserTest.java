@@ -35,7 +35,6 @@ public class ParserTest extends TestCase {
         args = new String[2];
         args[0] = fileName;
         args[1] = numOfBlocks;
-        args[2] = "random";
         // creates binaryInputTest.bin, which is 1 block of 512 records
         GenBinaryDataFile.main(args);
         // creation of Parser that goes through "binaryInputTest.bin"
@@ -118,13 +117,14 @@ public class ParserTest extends TestCase {
     /**
      * Tests the replacementSelection method in Parser in a case where there is
      * 8 blocks of data or less to sort. This should be as simple as getting the
-     * minimum record from the top of the heap and putting it into an output
+     * minimum record from the top of the heap a
+     * nd putting it into an output
      * buffer
      * 
      * @throws IOException
      */
     public void testReplacementSelectionCaseOne() throws IOException {
-        String[] args = { "caseOneFile.bin", "8", "random" };
+        String[] args = { "caseOneFile.bin", "8" };
         GenBinaryDataFile.main(args);
         Parser pc1 = new Parser(args[0]);
         pc1.replacementSelection();

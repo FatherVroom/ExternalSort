@@ -24,6 +24,31 @@ public class MinHeapTest extends TestCase {
 
 
     /**
+     * Tests the initialization of an invalid minheap.
+     */
+    public void testInit() {
+        Double d[] = new Double[1];
+        MinHeap<Double> mhd = null;
+        AssertionError e = null;
+        try {
+            mhd = new MinHeap<Double>(d, 0, 100);
+        }
+        catch (AssertionError a) {
+            e = a;
+        }
+        assertNotNull(e);
+        e = null;
+        try {
+            mhd = new MinHeap<Double>(d, 100, 0);
+        }
+        catch (AssertionError a) {
+            e = a;
+        }
+        assertNotNull(e);
+    }
+
+
+    /**
      * tests both leftChild and rightChild methods
      */
     public void testChildren() {
@@ -124,14 +149,6 @@ public class MinHeapTest extends TestCase {
         assertEquals(fourthRecord, mh.removeMin());
         assertEquals(secondRecord, mh.getRoot());
         assertEquals(secondRecord, mh.removeMin());
-    }
-
-
-    /**
-     * Tests the isLeaf method
-     */
-    public void testIsLeaf() {
-
     }
 
 
@@ -455,5 +472,203 @@ public class MinHeapTest extends TestCase {
                 assertTrue(parent < d[MinHeap.rightChild(i)]);
             }
         }
+    }
+
+
+    /**
+     * tests the removeMinNoUpdate method, which basically removes the minimum
+     * value of a minheap but it doesn't make an adjustment for the empty root
+     */
+    public void testRemoveMinNoUpdate() {
+        Double[] d = new Double[10];
+        MinHeap<Double> mhd = new MinHeap<Double>(d, 0, d.length);
+        AssertionError a = null;
+        try {
+            mhd.removeMinNoUpdate();
+        }
+        catch (AssertionError e) {
+            a = e;
+        }
+        assertNotNull("Heap is empty; cannot remove", a);
+        mhd.insert(6.0);
+        mhd.insert(5.0);
+        mhd.insert(2.0);
+        mhd.insert(1.0);
+        mhd.insert(4.0);
+        mhd.insert(3.0);
+        mhd.insert(0.0);
+        assertEquals(7, mhd.heapSize());
+        assertEquals(0.0, mhd.getRoot(), 0.01);
+        assertEquals(0.0, mhd.removeMinNoUpdate(), 0.01);
+        assertNull(mhd.getRoot());
+    }
+
+
+    /**
+     * tests the removeMin method when there is case where there is 1 item left
+     * so there is no need to sift down after removal
+     */
+    public void testRemoveMinEdgeCase() {
+        Double[] d = new Double[7];
+        MinHeap<Double> mhd = new MinHeap<Double>(d, 0, d.length);
+        mhd.insert(6.0);
+        mhd.insert(5.0);
+        mhd.insert(2.0);
+        mhd.insert(1.0);
+        mhd.insert(4.0);
+        mhd.insert(3.0);
+        mhd.insert(0.0);
+        int hSize = mhd.heapSize();
+        assertEquals(7, hSize);
+        for (int i = 0; i < hSize - 1; i++) {
+            mhd.removeMin();
+        }
+        assertEquals(mhd.getRoot(), mhd.removeMin(), 0.01);
+    }
+
+
+    /**
+     * Tests the isLeaf method
+     */
+    public void testIsLeaf() {
+        Double[] d = new Double[7];
+        MinHeap<Double> mhd = new MinHeap<Double>(d, 0, d.length);
+        mhd.insert(6.0);
+        mhd.insert(5.0);
+        mhd.insert(2.0);
+        mhd.insert(1.0);
+        mhd.insert(4.0);
+        mhd.insert(3.0);
+        mhd.insert(0.0);
+        int hSize = mhd.heapSize();
+        assertEquals(7, hSize);
+        assertFalse(mhd.isLeaf(0));
+        assertFalse(mhd.isLeaf(1));
+        assertFalse(mhd.isLeaf(2));
+        assertTrue(mhd.isLeaf(3));
+        assertTrue(mhd.isLeaf(4));
+        assertTrue(mhd.isLeaf(5));
+        assertTrue(mhd.isLeaf(6));
+        assertFalse(mhd.isLeaf(7));
+    }
+
+
+    /**
+     * Tests assertion errors for the method siftDown(). One error occurs if the
+     * position called is greater than or equal to the size of the minheap.
+     * Another error occurs when the position called for a sift is less than 0
+     * 
+     */
+    public void testSiftDownErrors() {
+        Double[] d = new Double[7];
+        MinHeap<Double> mhd = new MinHeap<Double>(d, 0, d.length);
+        AssertionError a = null;
+        try {
+            mhd.siftDown(0);
+        }
+        catch (AssertionError e) {
+            a = e;
+        }
+        assertNotNull(a);
+        a = null;
+        try {
+            mhd.siftDown(-1);
+        }
+        catch (AssertionError e) {
+            a = e;
+        }
+        assertNotNull(a);
+    }
+
+
+    /*
+     * tests the siftUp method when assertions are thrown
+     */
+    public void testSiftUpErrors() {
+        Double[] d = new Double[7];
+        MinHeap<Double> mhd = new MinHeap<Double>(d, 0, d.length);
+        AssertionError a = null;
+        try {
+            mhd.siftUp(0);
+        }
+        catch (AssertionError e) {
+            a = e;
+        }
+        assertNotNull(a);
+        a = null;
+        try {
+            mhd.siftUp(-1);
+        }
+        catch (AssertionError e) {
+            a = e;
+        }
+        assertNotNull(a);
+    }
+
+
+    /**
+     * Tests the replacementSelectionInsert. If there is an element in the
+     * root of the minheap that is not null, then false is returned because it
+     * basically didn't pass the precondition of having removeMinNoUpdate
+     * called. If it is called and you do not want to deactivate the element
+     * being inserted, then it is simply inserted at the root and sifted down to
+     * the correct position and true is returned. In the case where you do
+     * deactivate the inserted element, then you call swap and deactivate.
+     */
+    public void testReplacementSelectionInsert() {
+        Double[] d = new Double[7];
+        MinHeap<Double> mhd = new MinHeap<Double>(d, 0, d.length);
+        mhd.insert(6.0);
+        mhd.insert(5.0);
+        mhd.insert(2.0);
+        mhd.insert(1.0);
+        mhd.insert(4.0);
+        mhd.insert(3.0);
+        mhd.insert(0.0);
+        assertFalse(mhd.replacementSelectionInsert(0.0, false));
+        mhd.removeMinNoUpdate();
+        assertTrue(mhd.replacementSelectionInsert(7.0, false));
+        assertEquals(7, mhd.heapSize());
+        assertEquals(1, d[0], 0.01);
+        assertEquals(7, d[mhd.heapSize() - 1], 0.01);
+        assertEquals(0, mhd.getDeactiveSize());
+        mhd.removeMinNoUpdate();
+        assertTrue(mhd.replacementSelectionInsert(3.5, true));
+        assertEquals(1, mhd.getDeactiveSize());
+        assertEquals(6, mhd.heapSize());
+    }
+
+
+    /**
+     * tests the reactivate method
+     */
+    public void testReactivate() {
+        Double[] d = new Double[7];
+        MinHeap<Double> mhd = new MinHeap<Double>(d, 0, d.length);
+        mhd.insert(6.0);
+        mhd.insert(5.0);
+        mhd.insert(2.0);
+        mhd.insert(1.0);
+        mhd.insert(4.0);
+        mhd.insert(3.0);
+        mhd.insert(0.0);
+        assertEquals(7, mhd.heapSize());
+        assertFalse(mhd.reactivate());
+        mhd.removeMinNoUpdate();
+        assertTrue(mhd.replacementSelectionInsert(3.5, true));
+        assertEquals(1, mhd.getDeactiveSize());
+        assertEquals(6, mhd.heapSize());
+        mhd.removeMinNoUpdate();
+        assertTrue(mhd.replacementSelectionInsert(3.5, true));
+        assertEquals(2, mhd.getDeactiveSize());
+        assertEquals(5, mhd.heapSize());
+        mhd.removeMinNoUpdate();
+        assertTrue(mhd.replacementSelectionInsert(3.5, true));
+        assertEquals(3, mhd.getDeactiveSize());
+        assertEquals(4, mhd.heapSize());
+        // NEEDS TO BE REWORKED
+        assertTrue(mhd.reactivate());
+        assertEquals(0, mhd.getDeactiveSize());
+        assertEquals(7, mhd.heapSize());
     }
 }

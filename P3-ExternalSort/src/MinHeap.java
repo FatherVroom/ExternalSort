@@ -34,8 +34,15 @@ public class MinHeap<T extends Comparable<T>> {
      *            as a parameter
      */
     public MinHeap(T[] h, int heapSize, int capacity) {
-        assert capacity <= h.length : "capacity is beyond array limits";
-        assert heapSize <= capacity : "Heap size is beyond max";
+        if (h.length < capacity) {
+            throw new AssertionError(
+                "capacity can't be beyond the array elements");
+        }
+        if (capacity < heapSize) {
+            throw new AssertionError("heap size is beyond max");
+        }
+// assert capacity <= h.length : "capacity is beyond array limits";
+// assert heapSize <= capacity : "Heap size is beyond max";
         heap = h;
         n = heapSize;
         this.capacity = capacity;
@@ -209,8 +216,14 @@ public class MinHeap<T extends Comparable<T>> {
      *            position of element that is being sifted down
      */
     public void siftDown(int pos) {
-        assert (0 <= pos && pos < n) : "Invalid heap position of " + pos
-            + " where the heap is size " + n;
+        if (pos < 0) {
+            throw new AssertionError("Position called was " + pos
+                + " but must be greater than or equal to 0");
+        }
+        else if (pos >= n) {
+            throw new AssertionError("Position called was " + pos
+                + " but it must be less than " + n);
+        }
         while (!isLeaf(pos)) {
             int child = leftChild(pos);
             if ((child + 1 < n) && isLessThan(child + 1, child)) {
@@ -232,7 +245,15 @@ public class MinHeap<T extends Comparable<T>> {
      *            position of element that is being sifted down
      */
     public void siftUp(int pos) {
-        assert (0 <= pos && pos < n) : "Invalid heap position";
+// assert (0 <= pos && pos < n) : "Invalid heap position";
+        if (pos < 0) {
+            throw new AssertionError("Position called was " + pos
+                + " but must be greater than or equal to 0");
+        }
+        else if (pos >= n) {
+            throw new AssertionError("Position called was " + pos
+                + " but it must be less than " + n);
+        }
         while (pos > 0) {
             int parent = parent(pos);
             if (isLessThan(parent, pos)) {
@@ -389,6 +410,17 @@ public class MinHeap<T extends Comparable<T>> {
      */
     private boolean isLessThan(int pos1, int pos2) {
         return heap[pos1].compareTo(heap[pos2]) < 0;
+    }
+
+
+    /**
+     * Gets the number of elements in the minheap that have been deactivated for
+     * use in the next run
+     * 
+     * @return number of deactivated elements
+     */
+    public int getDeactiveSize() {
+        return deactiveSize;
     }
 
 }

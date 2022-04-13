@@ -39,9 +39,9 @@ public class GenBinaryDataFile {
      * First param is filename of File to be created
      * Second param is number of blocks to be created in file
      * Third param is one of the following types of files to be created:
-     *      "random" - randomly populates file
-     *      "sorted" - populates the file in sorted order
-     *      "reverseSorted" - populates the file in reverse sorted order
+     * "random" - randomly populates file
+     * "sorted" - populates the file in sorted order
+     * "reverseSorted" - populates the file in reverse sorted order
      * 
      * @param args
      */
@@ -56,7 +56,7 @@ public class GenBinaryDataFile {
             DataOutputStream file = new DataOutputStream(
                 new BufferedOutputStream(new FileOutputStream(args[0])));
 
-            //Generate random file
+            // Generate random file
             if (args[3].equals("random")) {
                 for (int i = 0; i < filesize; i++)
                     for (int j = 0; j < NumRecs; j++) {
@@ -66,8 +66,8 @@ public class GenBinaryDataFile {
                         file.writeDouble(val2);
                     }
             }
-            
-            //Generate sorted file
+
+            // Generate sorted file
             else if (args[3].equals("sorted")) {
                 val = 0;
                 val2 = 0.0;
@@ -79,8 +79,8 @@ public class GenBinaryDataFile {
                         val2 += 0.0001;
                     }
             }
-            
-            //Generate reverse sorted file
+
+            // Generate reverse sorted file
             else if (args[3].equals("reverseSorted")) {
                 val = 0;
                 Double d = Double.MAX_VALUE;

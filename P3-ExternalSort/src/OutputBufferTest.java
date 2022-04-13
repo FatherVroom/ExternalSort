@@ -49,7 +49,7 @@ public class OutputBufferTest extends TestCase {
      */
     public void testConvertRecsToByteForm() throws IOException {
         // creation of a new binary file called binaryInputTest.bin
-        String[] args = { "binaryInputTest.bin", "8", "random" };
+        String[] args = { "binaryInputTest.bin", "8" };
         GenBinaryDataFile.main(args);
         Parser p = new Parser(args[0]);
         // convert binary to bytes
