@@ -187,14 +187,6 @@ public class Parser {
                     outBuf = new OutputBuffer();
                 }
 
-                // Reactivate Heap if empty
-                if (mh.heapSize() == 0) {
-                    // If no inactive portion, we are done
-                    if (!mh.reactivate()) {
-                        return false;
-                    }
-                }
-
                 // Get next record in input buffer
                 Record nextRec = inBufRecords[inBufIndex];
 
@@ -205,6 +197,13 @@ public class Parser {
                 // Insert nextRec into MinHeap accordingly
                 mh.replacementSelectionInsert(nextRec, deactivate);
 
+                // Reactivate Heap if empty
+                if (mh.heapSize() == 0) {
+                    // If no inactive portion, we are done
+                    if (!mh.reactivate()) {
+                        return false;
+                    }
+                }
                 // Increment to next record of inBufRecords
                 inBufIndex++;
 

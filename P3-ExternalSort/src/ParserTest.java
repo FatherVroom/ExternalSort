@@ -121,8 +121,7 @@ public class ParserTest extends TestCase {
     /**
      * Tests the replacementSelection method in Parser in a case where there is
      * 8 blocks of data or less to sort. This should be as simple as getting the
-     * minimum record from the top of the heap a
-     * nd putting it into an output
+     * minimum record from the top of the heap and putting it into an output
      * buffer
      * 
      * @throws IOException
@@ -130,6 +129,20 @@ public class ParserTest extends TestCase {
      */
     public void testReplacementSelectionCaseOne() throws IOException {
         String[] args = { "caseOneFile.bin", "8", "random" };
+        GenBinaryDataFile.main(args);
+        Parser pc1 = new Parser(args[0]);
+        assertTrue(pc1.replacementSelection());
+        
+    }
+
+
+    /**
+     * tests replacement
+     * 
+     * @throws IOException
+     */
+    public void testReplacementSelectionCaseTwo() throws IOException {
+        String[] args = { "caseOneFile.bin", "32", "random" };
         GenBinaryDataFile.main(args);
         Parser pc1 = new Parser(args[0]);
         assertTrue(pc1.replacementSelection());
@@ -147,7 +160,7 @@ public class ParserTest extends TestCase {
         String[] args = { "sortedBinary.bin", "8", "sorted" };
         GenBinaryDataFile.main(args);
         Parser pc1 = new Parser(args[0]);
-        RandomAccessFile raf = new RandomAccessFile("sortedBinary.bin", "r");
+        RandomAccessFile raf = new RandomAccessFile(args[0], "r");
         assertEquals(0, pc1.isSorted(raf));
     }
 
@@ -166,4 +179,5 @@ public class ParserTest extends TestCase {
         RandomAccessFile raf = new RandomAccessFile("unsortedBinary.bin", "r");
         assertEquals(16383, pc1.isSorted(raf));
     }
+
 }

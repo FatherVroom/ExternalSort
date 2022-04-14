@@ -639,36 +639,36 @@ public class MinHeapTest extends TestCase {
     }
 
 
-//    /**
-//     * tests the reactivate method
-//     */
-//    public void testReactivate() {
-//        Double[] d = new Double[7];
-//        MinHeap<Double> mhd = new MinHeap<Double>(d, 0, d.length);
-//        mhd.insert(6.0);
-//        mhd.insert(5.0);
-//        mhd.insert(2.0);
-//        mhd.insert(1.0);
-//        mhd.insert(4.0);
-//        mhd.insert(3.0);
-//        mhd.insert(0.0);
-//        assertEquals(7, mhd.heapSize());
-//        assertFalse(mhd.reactivate());
-//        mhd.removeMinNoUpdate();
-//        assertTrue(mhd.replacementSelectionInsert(3.5, true));
-//        assertEquals(1, mhd.getDeactiveSize());
-//        assertEquals(6, mhd.heapSize());
-//        mhd.removeMinNoUpdate();
-//        assertTrue(mhd.replacementSelectionInsert(3.5, true));
-//        assertEquals(2, mhd.getDeactiveSize());
-//        assertEquals(5, mhd.heapSize());
-//        mhd.removeMinNoUpdate();
-//        assertTrue(mhd.replacementSelectionInsert(3.5, true));
-//        assertEquals(3, mhd.getDeactiveSize());
-//        assertEquals(4, mhd.heapSize());
-//        // NEEDS TO BE REWORKED
-//        assertTrue(mhd.reactivate());
-//        assertEquals(0, mhd.getDeactiveSize());
-//        assertEquals(7, mhd.heapSize());
-//    }
+    /**
+     * tests the reactivate method
+     */
+    public void testReactivate() {
+        Double[] d = new Double[7];
+        MinHeap<Double> mhd = new MinHeap<Double>(d, 0, d.length);
+        mhd.insert(6.0);
+        mhd.insert(5.0);
+        mhd.insert(2.0);
+        mhd.insert(1.0);
+        mhd.insert(4.0);
+        mhd.insert(3.0);
+        mhd.insert(0.0);
+        assertEquals(7, mhd.heapSize());
+        assertFalse(mhd.reactivate());
+        mhd.removeMinNoUpdate();
+        assertTrue(mhd.replacementSelectionInsert(3.5, true));
+        assertEquals(1, mhd.getDeactiveSize());
+        assertEquals(6, mhd.heapSize());
+        mhd.removeMinNoUpdate();
+        assertTrue(mhd.replacementSelectionInsert(3.5, true));
+        assertEquals(2, mhd.getDeactiveSize());
+        assertEquals(5, mhd.heapSize());
+        mhd.removeMinNoUpdate();
+        assertTrue(mhd.replacementSelectionInsert(3.5, true));
+        assertEquals(3, mhd.getDeactiveSize());
+        assertEquals(4, mhd.heapSize());
+        // NEEDS TO BE REWORKED
+        assertTrue(mhd.reactivate());
+        assertEquals(0, mhd.getDeactiveSize());
+        assertEquals(7, mhd.heapSize());
+    }
 }
