@@ -359,7 +359,11 @@ public class MinHeap<T extends Comparable<T>> {
      * position in the heap.
      */
     private void swapAndDeactivate() {
-        if (n > 0) {
+        if (n == 1) {
+            n--;
+            deactiveSize++;
+        }
+        else if (n > 0) {
             n--;
             swap(0, n); // Swap minimum with last value
             deactiveSize++;
