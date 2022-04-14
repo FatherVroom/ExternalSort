@@ -50,6 +50,45 @@ public class Parser {
         }
     }
 
+    /**
+     * Prints the first Record of each block from the file sortedFile as
+     * a long and a double. Prints five Records per line.
+     * 
+     * @param sortedFile - The file to be printed according to spec
+     * @throws IOException 
+     */
+    public void printToStdOut(RandomAccessFile sortedFile) throws IOException {
+        int printCounter = 0;   //Tracks numRecords printed on current line
+        long blockCounter = 0;  //Current block of sortedFile
+        long totalBlocks = getNumOfBlocks();    //Total blocks in file
+        currentPos = 0;         //Set current position to beginning of file
+        InputBuffer inBuf = null; //InputBuffer to hold each block
+        raf = sortedFile;       //Set raf field as sortedFile
+        
+        raf.seek(0);     //Seek to beginning of file
+        
+        //Loop through file block by block, printing the first record of each
+        while (blockCounter < totalBlocks) {
+            inBuf = new InputBuffer(getNextByteBlock());
+            inBuf.fillRecords();
+            Record[] blockRecords = inBuf.getRecords();
+            Record firstRecOfBlock = blockRecords[0];
+            
+            //Check if newline necessary
+            if (printCounter == 5) {
+                System.out.print("\n");
+            }
+            
+            //Print float
+            System.out.print(firstRecOfBlock.getValue() + " ");
+            
+            //Print double
+            System.out.print(firstRecOfBlock.getKey() + " ");
+            
+            //Increment block counter
+            blockCounter++;
+        }
+    }
 
     /**
      * Takes the binary input file and constructs a byte array the size of a
@@ -166,7 +205,8 @@ public class Parser {
         // TODO: Make this while loop terminate when getNextByteBlock()()
         // exception thrown
         // (this works but might as well)
-        long blockCounter = 8; // Already processed first 8 in MinHeap
+        //long blockCounter = 8; // Already processed first 8 in MinHeap
+        long blockCounter = 9;
         long totalBlocks = getNumOfBlocks();
 
         // While there are more blocks in input file, continue
@@ -213,6 +253,9 @@ public class Parser {
             }
         }
 
+        // Repopulate Root with last element in active/inactive portion, sift
+        mh.prepHeapForPhase3();
+        
         // PHASE 3: Empty the heap without inserting since inBuf is finished
         // No more blocks in input file, empty active portion of heap
         while (mh.heapSize() != 0) {
