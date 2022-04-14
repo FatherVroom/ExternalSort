@@ -50,45 +50,48 @@ public class Parser {
         }
     }
 
+
     /**
      * Prints the first Record of each block from the file sortedFile as
      * a long and a double. Prints five Records per line.
      * 
-     * @param sortedFile - The file to be printed according to spec
-     * @throws IOException 
+     * @param sortedFile
+     *            - The file to be printed according to spec
+     * @throws IOException
      */
     public void printToStdOut(RandomAccessFile sortedFile) throws IOException {
-        int printCounter = 0;   //Tracks numRecords printed on current line
-        long blockCounter = 0;  //Current block of sortedFile
-        long totalBlocks = getNumOfBlocks();    //Total blocks in file
-        currentPos = 0;         //Set current position to beginning of file
-        InputBuffer inBuf = null; //InputBuffer to hold each block
-        raf = sortedFile;       //Set raf field as sortedFile
-        
-        raf.seek(0);     //Seek to beginning of file
-        
-        //Loop through file block by block, printing the first record of each
+        int printCounter = 0; // Tracks numRecords printed on current line
+        long blockCounter = 0; // Current block of sortedFile
+        long totalBlocks = getNumOfBlocks(); // Total blocks in file
+        currentPos = 0; // Set current position to beginning of file
+        InputBuffer inBuf = null; // InputBuffer to hold each block
+        raf = sortedFile; // Set raf field as sortedFile
+
+        raf.seek(0); // Seek to beginning of file
+
+        // Loop through file block by block, printing the first record of each
         while (blockCounter < totalBlocks) {
             inBuf = new InputBuffer(getNextByteBlock());
             inBuf.fillRecords();
             Record[] blockRecords = inBuf.getRecords();
             Record firstRecOfBlock = blockRecords[0];
-            
-            //Check if newline necessary
+
+            // Check if newline necessary
             if (printCounter == 5) {
                 System.out.print("\n");
             }
-            
-            //Print float
+
+            // Print float
             System.out.print(firstRecOfBlock.getValue() + " ");
-            
-            //Print double
+
+            // Print double
             System.out.print(firstRecOfBlock.getKey() + " ");
-            
-            //Increment block counter
+
+            // Increment block counter
             blockCounter++;
         }
     }
+
 
     /**
      * Takes the binary input file and constructs a byte array the size of a
@@ -117,28 +120,32 @@ public class Parser {
         // increment the current positon by 8191 so that each time
         // getNextByteBlock()() is
         // called, we move the RandomAccessFile over to the next block
-        int blockIncrease = BLOCK_SIZE;
-        currentPos += blockIncrease;
+// int blockIncrease = BLOCK_SIZE; // [potential error spot here]
+        currentPos += BLOCK_SIZE;
+        System.out.println(currentPos);
         raf.seek(currentPos);
 
         // returns block array after conversion from bytebuffer to byte array
         return block.array();
     }
-    
+
+
     /**
      * Takes the specified binary file r and constructs a byte array the size
      * of a single block from file position blockStart.
      * 
-     * @param r - The binary file to get the next block from
-     * @param blockStart - The position in file r at which the block starts
+     * @param r
+     *            - The binary file to get the next block from
+     * @param blockStart
+     *            - The position in file r at which the block starts
      * @return A byte array containing the specified block
      * @throws IOException
      */
-    public byte[] getNextByteBlockParams(RandomAccessFile r, int blockStart) 
+    public byte[] getNextByteBlockParams(RandomAccessFile r, int blockStart)
         throws IOException {
         // Seek to position blockStart
         r.seek(blockStart);
-        
+
         // allocate space to create bytebuffer
         ByteBuffer block = ByteBuffer.allocate(BLOCK_SIZE);
         try {
@@ -152,62 +159,64 @@ public class Parser {
         }
         catch (EOFException e) {
             throw new EOFException("End of the file titled, " + fileName
-                + ", has been reached. File must have at least 1 block of " + 
-                "records (512 records).");
+                + ", has been reached. File must have at least 1 block of "
+                + "records (512 records).");
         }
-        
+
         // returns block array after conversion from bytebuffer to byte array
         return block.array();
     }
-    
+
+
     /**
      * Parses a file, checking for the number of occurrences in which a run
      * is broken (record i + 1 < record i).
      * 
-     * @param r - The file to be parsed
+     * @param r
+     *            - The file to be parsed
      * @return The number of errors found in file r
      * @throws IOException
      */
     public int numErrors(RandomAccessFile r) throws IOException {
-        int errorCount = 0;     //Tracks number of errors found
-        int fileRecordPos = 0;  //Tracks which record of the file we're on
-        int bytePos = 0;        //Tracks what byte of file we're on
-        long blockCounter = 0;      //Current block of sortedFile
-        long totalBlocks = getNumOfBlocks();    //Total blocks in file
-        InputBuffer inBuf = null;   //InputBuffer to hold block
-        
+        int errorCount = 0; // Tracks number of errors found
+        int fileRecordPos = 0; // Tracks which record of the file we're on
+        int bytePos = 0; // Tracks what byte of file we're on
+        long blockCounter = 0; // Current block of sortedFile
+        long totalBlocks = getNumOfBlocks(); // Total blocks in file
+        InputBuffer inBuf = null; // InputBuffer to hold block
+
         // Seek to start of file
         r.seek(bytePos);
-        
-        //While not at E.O.F., get next block and check for errors
+
+        // While not at E.O.F., get next block and check for errors
         while (blockCounter < totalBlocks) {
-            //Fill Input Buffer, get Record array
+            // Fill Input Buffer, get Record array
             inBuf = new InputBuffer(getNextByteBlockParams(r, bytePos));
             inBuf.fillRecords();
             Record[] blockRecords = inBuf.getRecords();
-            
-            //Loop through Record array, checking for errors
+
+            // Loop through Record array, checking for errors
             for (int i = 0; i < blockRecords.length - 1; i++) {
                 if (blockRecords[i + 1].compareTo(blockRecords[i]) < 0) {
                     errorCount++;
-                    
-                    //Optional error message
-//                    System.out.println("Error in block # " + blockCounter + 1 +
-//                        " at File Record position " + fileRecordPos + 
-//                        ", File Byte position " + bytePos + ": Record # " + 
-//                        i + 1 + " (Value: " + blockRecords[i + 1].getKey() +  
-//                        ") < Record # " + i + " (Value: " + 
-//                        blockRecords[i + 1].getKey() + ")");
-                    
+
+                    // Optional error message
+// System.out.println("Error in block # " + blockCounter + 1 +
+// " at File Record position " + fileRecordPos +
+// ", File Byte position " + bytePos + ": Record # " +
+// i + 1 + " (Value: " + blockRecords[i + 1].getKey() +
+// ") < Record # " + i + " (Value: " +
+// blockRecords[i + 1].getKey() + ")");
+
                 }
-                //Increment counters
+                // Increment counters
                 fileRecordPos++;
                 bytePos += 16;
             }
-            //Increment blockCounter
+            // Increment blockCounter
             blockCounter++;
         }
-        //Return number of errors found
+        // Return number of errors found
         return errorCount;
     }
 
@@ -269,7 +278,7 @@ public class Parser {
             // runFile should now be sorted, calling code will rename file and
             // terminate program
             outBuf.writeToRunFile(runRaf);
-            if (isSorted(runRaf) == 0) {
+            if (numErrors(runRaf) == 0) {
                 return true;
             }
 
@@ -291,7 +300,7 @@ public class Parser {
         // TODO: Make this while loop terminate when getNextByteBlock()()
         // exception thrown
         // (this works but might as well)
-        //long blockCounter = 8; // Already processed first 8 in MinHeap
+        // long blockCounter = 8; // Already processed first 8 in MinHeap
         long blockCounter = 9;
         long totalBlocks = getNumOfBlocks();
 
@@ -341,7 +350,7 @@ public class Parser {
 
         // Repopulate Root with last element in active/inactive portion, sift
         mh.prepHeapForPhase3();
-        
+
         // PHASE 3: Empty the heap without inserting since inBuf is finished
         // No more blocks in input file, empty active portion of heap
         while (mh.heapSize() != 0) {
@@ -386,48 +395,4 @@ public class Parser {
             throw new IOException("EndOfFile");
         }
     }
-
-
-    /**
-     * Checks if the file passed in as a parameter raf is sorted in ascending
-     * order. Meaning, the first thing read from the file is the smallest key
-     * value
-     * 
-     * @param raf
-     *            is the run file being checked for sorting
-     * @return If the
-     * @throws IOException
-     */
-    public int isSorted(RandomAccessFile raf) throws IOException {
-        // go to start of file
-        raf.seek(0);
-
-        // stores amount of records to compare
-        int count = 0;
-        // get a count of how many records to compare and store it in count
-        while (raf.read() != -1) {
-            raf.seek(raf.getFilePointer() - 1);
-            raf.readDouble();
-            raf.readLong();
-            count++;
-        }
-        // go to start of file
-        raf.seek(0);
-        // get a count of how many errors there are in the run
-        int errorCount = 0;
-        for (int i = 0; i < count - 1; i++) {
-            double d = raf.readDouble();
-            raf.readLong();
-            double compareD = raf.readDouble();
-            raf.readLong();
-            if (d > compareD) {
-                errorCount++;
-            }
-            raf.seek(raf.getFilePointer() - (Long.BYTES + Double.BYTES));
-        }
-        return errorCount;
-    }
-    
-    
-
 }

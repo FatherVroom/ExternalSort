@@ -636,6 +636,20 @@ public class MinHeapTest extends TestCase {
         assertTrue(mhd.replacementSelectionInsert(3.5, true));
         assertEquals(1, mhd.getDeactiveSize());
         assertEquals(6, mhd.heapSize());
+
+        d = new Double[1];
+        mhd = new MinHeap<Double>(d, 0, d.length);
+        AssertionError a = null;
+        try {
+            mhd.swapAndDeactivate();
+        }
+        catch (AssertionError e) {
+            a = e;
+        }
+        assertNotNull(a);
+        assertTrue(mhd.replacementSelectionInsert(1.0, true));
+        mhd.replacementSelectionInsert(1.0, true);
+
     }
 
 
@@ -666,9 +680,40 @@ public class MinHeapTest extends TestCase {
         assertTrue(mhd.replacementSelectionInsert(3.5, true));
         assertEquals(3, mhd.getDeactiveSize());
         assertEquals(4, mhd.heapSize());
-        // NEEDS TO BE REWORKED
+        mhd.removeMin();
+        while (mhd.heapSize() > 0) {
+            mhd.removeMin();
+        }
+        assertEquals(0, mhd.heapSize());
         assertTrue(mhd.reactivate());
-        assertEquals(0, mhd.getDeactiveSize());
+    }
+
+
+    /**
+     * Tests the prepHeapForPhase3 method
+     */
+    public void testPrepHeapForPhase3() {
+        Double[] d = new Double[7];
+        MinHeap<Double> mhd = new MinHeap<Double>(d, 0, d.length);
+        mhd.insert(6.0);
+        mhd.insert(5.0);
+        mhd.insert(2.0);
+        mhd.insert(1.0);
+        mhd.insert(4.0);
+        mhd.insert(3.0);
+        mhd.insert(0.0);
         assertEquals(7, mhd.heapSize());
+        mhd.removeMinNoUpdate();
+        assertEquals(6, mhd.heapSize());
+        assertNull(mhd.getRoot());
+        assertEquals(0, mhd.getDeactiveSize());
+        mhd.prepHeapForPhase3();
+        assertEquals(6, mhd.heapSize());
+        mhd.swapAndDeactivate();
+        assertEquals(1, mhd.getDeactiveSize());
+
+        mhd.prepHeapForPhase3();
+        assertEquals(4, mhd.heapSize());
+
     }
 }

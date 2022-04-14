@@ -197,7 +197,8 @@ public class MinHeap<T extends Comparable<T>> {
         }
         return false;
     }
-    
+
+
     /**
      * Prepares the heap for phase 3 of replacement selection. Since the root
      * of the heap is null after phase 2, this method repopulates the root
@@ -208,22 +209,22 @@ public class MinHeap<T extends Comparable<T>> {
     public void prepHeapForPhase3() {
         // If no inactive portion, swap null root w/ last active element
         if (getDeactiveSize() == 0) {
-            //Swap null root with last element
+            // Swap null root with last element
             swap(0, heapSize());
-            
-            //Sift down new root to correct position
+
+            // Sift down new root to correct position
             siftDown(0);
         }
-        
-        //Else, swap null root w/ last inactive element in heap array
+
+        // Else, swap null root w/ last inactive element in heap array
         else {
-            //Swap null root with last inactive element in heap array
+            // Swap null root with last inactive element in heap array
             swap(0, heapSize() + getDeactiveSize());
-            
-            //Swap root containing inactive element with last active element
+
+            // Swap root containing inactive element with last active element
             swap(0, heapSize());
-            
-            //Decrement n, deactivating the swapped element
+
+            // Decrement n, deactivating the swapped element
             n--;
         }
     }
@@ -388,7 +389,7 @@ public class MinHeap<T extends Comparable<T>> {
      * of the heap anymore), and sifts the new root down to its correct
      * position in the heap.
      */
-    private void swapAndDeactivate() {
+    public void swapAndDeactivate() {
         if (n == 1) {
             n--;
             deactiveSize++;

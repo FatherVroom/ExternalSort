@@ -91,6 +91,13 @@ public class ParserTest extends TestCase {
     }
 
 
+    public void testGetBlockAgain() throws IOException {
+        for (int i = 0; i < 8; i++) {
+            p.getNextByteBlock();
+        }
+    }
+
+
     /**
      * Tests the getBlock() method when an exception is thrown. An exception
      * would be thrown because the file being read in is not actually 8192 bytes
@@ -132,7 +139,9 @@ public class ParserTest extends TestCase {
         GenBinaryDataFile.main(args);
         Parser pc1 = new Parser(args[0]);
         assertTrue(pc1.replacementSelection());
-        
+        RandomAccessFile raf = new RandomAccessFile(args[0], "r");
+        assertEquals(0, pc1.numErrors(raf));
+
     }
 
 
@@ -145,7 +154,9 @@ public class ParserTest extends TestCase {
         String[] args = { "caseOneFile.bin", "32", "random" };
         GenBinaryDataFile.main(args);
         Parser pc1 = new Parser(args[0]);
-        assertTrue(pc1.replacementSelection());
+
+        pc1.replacementSelection();
+
     }
 
 
@@ -161,7 +172,7 @@ public class ParserTest extends TestCase {
         GenBinaryDataFile.main(args);
         Parser pc1 = new Parser(args[0]);
         RandomAccessFile raf = new RandomAccessFile(args[0], "r");
-        assertEquals(0, pc1.isSorted(raf));
+        assertEquals(0, pc1.numErrors(raf));
     }
 
 
@@ -177,7 +188,7 @@ public class ParserTest extends TestCase {
         GenBinaryDataFile.main(args);
         Parser pc1 = new Parser(args[0]);
         RandomAccessFile raf = new RandomAccessFile("unsortedBinary.bin", "r");
-        assertEquals(16383, pc1.isSorted(raf));
+        assertEquals(16352, pc1.numErrors(raf));
     }
 
 }
