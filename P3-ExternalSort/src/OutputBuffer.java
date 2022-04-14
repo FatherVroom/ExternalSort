@@ -41,6 +41,12 @@ public class OutputBuffer {
         }
         return false;
     }
+    
+    public void printRecordContents() {
+        for (int i = 0; i < size; i++) {
+            System.out.println("Record # " + i + " = " + records[i].getKey());
+        }
+    }
 
 
     /**
