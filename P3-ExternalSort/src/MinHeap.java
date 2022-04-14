@@ -197,6 +197,36 @@ public class MinHeap<T extends Comparable<T>> {
         }
         return false;
     }
+    
+    /**
+     * Prepares the heap for phase 3 of replacement selection. Since the root
+     * of the heap is null after phase 2, this method repopulates the root
+     * of the heap then heapifies.
+     * 
+     * @precondition The root of the heap is null
+     */
+    public void prepHeapForPhase3() {
+        // If no inactive portion, swap null root w/ last active element
+        if (getDeactiveSize() == 0) {
+            //Swap null root with last element
+            swap(0, heapSize());
+            
+            //Sift down new root to correct position
+            siftDown(0);
+        }
+        
+        //Else, swap null root w/ last inactive element in heap array
+        else {
+            //Swap null root with last inactive element in heap array
+            swap(0, heapSize() + getDeactiveSize());
+            
+            //Swap root containing inactive element with last active element
+            swap(0, heapSize());
+            
+            //Decrement n, deactivating the swapped element
+            n--;
+        }
+    }
 
 
     /**
