@@ -201,12 +201,17 @@ public class Parser {
                     errorCount++;
 
                     // Optional error message
-// System.out.println("Error in block # " + blockCounter + 1 +
-// " at File Record position " + fileRecordPos +
-// ", File Byte position " + bytePos + ": Record # " +
-// i + 1 + " (Value: " + blockRecords[i + 1].getKey() +
-// ") < Record # " + i + " (Value: " +
-// blockRecords[i + 1].getKey() + ")");
+//                    System.out.println("Error in block # " + blockCounter
+//                        + " at File Record position " + fileRecordPos
+//                        + ", File Byte position " + bytePos + ": Record # " + i
+//                        + 1 + " (Value: " + blockRecords[i + 1].getKey()
+//                        + ") < Record # " + i + " (Value: " + blockRecords[i
+//                            + 1].getKey() + ")");
+//                    System.out.println("-------------------------------------");
+                    
+//                    System.out.println("Error in block # " + blockCounter + 
+//                        " at File Record position " + fileRecordPos + 
+//                        " (Value: " + blockRecords[i].getKey() + ")");
 
                 }
                 // Increment counters
@@ -241,20 +246,27 @@ public class Parser {
         // PHASE 1: Fill 8 Blocks into MinHeap
         InputBuffer inBuf = null;
         Record[] heapArray = new Record[MAX_HEAP_SIZE];
-        MinHeap<Record> mh = new MinHeap<Record>(heapArray, 0, MAX_HEAP_SIZE);
+//        MinHeap<Record> mh = new MinHeap<Record>(heapArray, 0, MAX_HEAP_SIZE);
 
         // Get block with input buffer, convert to Records, add to heapArray
         // Maybe replace with helper method called fillHeapArray(InputBuffer)
+        int heapArrIndex = 0;
         for (int i = 0; i < MIN_BLOCKS; i++) {
             inBuf = new InputBuffer(getNextByteBlock());
             inBuf.fillRecords();
             Record[] blockRecords = inBuf.getRecords();
+//            for (int j = 0; j < NUM_RECORDS; j++) {
+//                mh.insert(blockRecords[j]);
+//            }
+            
             for (int j = 0; j < NUM_RECORDS; j++) {
-                mh.insert(blockRecords[j]);
+                heapArray[heapArrIndex] = blockRecords[j];
+                heapArrIndex++;
             }
         }
+        MinHeap<Record> mh = new MinHeap<Record>(heapArray, MAX_HEAP_SIZE, MAX_HEAP_SIZE);
         // organize heap
-        mh.buildHeap();
+        //mh.buildHeap();
 
         // PHASE 2: Replacement selection
         // Create Run File and Output Buffer
@@ -268,11 +280,18 @@ public class Parser {
             while (mh.heapSize() >= 1) {
                 // Flush output buffer if necessary
                 if (outBuf.isFull()) {
+//                    outBuf.printRecordContents();   //FOR TESTING
                     outBuf.writeToRunFile(runRaf);
+//                    byte[] test = new byte[8192];
+//                    test = outBuf.convertRecsToByteForm();
+//                    ByteBuffer bb = ByteBuffer.wrap(test);
+//                    for (int i = 0; i < BLOCK_SIZE; i++) {
+//                        System.out.println("Record # " + i + " id = " + bb.getFloat());
+//                        System.out.println("Record # " + i + " key = " + bb.getDouble());
+//                    }
                     outBuf = new OutputBuffer();
                 }
                 // Write next minimum from Heap to Output Buffer
-
                 outBuf.addRecord(mh.removeMin());
             }
             // runFile should now be sorted, calling code will rename file and
@@ -281,7 +300,6 @@ public class Parser {
             if (numErrors(runRaf) == 0) {
                 return true;
             }
-
         }
 
         // CASE: Input File >= 8 Blocks, replacement selection necessary

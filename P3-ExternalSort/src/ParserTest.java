@@ -143,6 +143,16 @@ public class ParserTest extends TestCase {
         assertEquals(0, pc1.numErrors(raf));
 
     }
+    
+    public void testReplacementSelectionCaseOneOrderly() throws IOException {
+        String[] args = { "caseOneFile.bin", "8", "reverseSorted" };
+        GenBinaryDataFile.main(args);
+        Parser pc1 = new Parser(args[0]);
+        assertTrue(pc1.replacementSelection());
+        //RandomAccessFile raf = new RandomAccessFile(args[0], "r");
+        //assertEquals(0, pc1.numErrors(raf));
+
+    }
 
 
     /**

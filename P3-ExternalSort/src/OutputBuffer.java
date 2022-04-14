@@ -28,6 +28,15 @@ public class OutputBuffer {
 
     // Methods
     /**
+     * Getter method for Record[] records
+     * 
+     * @return
+     */
+    public Record[] getRecords() {
+        return records;
+    }
+    
+    /**
      * Adds a Record object to the Record array backing this OutputBuffer
      * 
      * @param r

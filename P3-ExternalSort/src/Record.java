@@ -38,8 +38,8 @@ public class Record implements Comparable<Record> {
         key = k;
         value = v;
         ByteBuffer bb = ByteBuffer.allocate(16);
-        bb.putDouble(k);
         bb.putLong(v);
+        bb.putDouble(k);
         completeRecord = bb.array();
     }
 

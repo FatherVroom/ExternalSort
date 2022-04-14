@@ -88,6 +88,7 @@ public class GenBinaryDataFile {
                 for (int i = 0; i < filesize; i++)
                     for (int j = 0; j < NumRecs; j++) {
 // System.out.println(val2);
+                        
                         file.writeDouble(val2);
                         file.writeLong(val);
                         val++;
