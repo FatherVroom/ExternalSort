@@ -75,7 +75,6 @@ public class OutputBuffer {
     public void writeToRunFile(RandomAccessFile raf) throws IOException {
         byte[] recsByteForm = convertRecsToByteForm();
         raf.write(recsByteForm);
-        System.out.println(recsByteForm.length);
     }
 
 

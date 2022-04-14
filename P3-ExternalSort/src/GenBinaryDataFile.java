@@ -47,8 +47,8 @@ public class GenBinaryDataFile {
      */
     public static void main(String args[]) {
         try {
-            long val;
-            double val2;
+            long val = 0;
+            double val2 = 0;
             assert (args.length == 3) : "\nUsage: GenBinaryDataFile <filename> <size>"
                 + " <genType>\nOptions \nSize is measured in blocks of 8192 bytes";
 
@@ -57,7 +57,7 @@ public class GenBinaryDataFile {
                 new BufferedOutputStream(new FileOutputStream(args[0])));
 
             // Generate random file
-            if (args[3].equals("random")) {
+            if (args[2].equals("random")) {
                 for (int i = 0; i < filesize; i++)
                     for (int j = 0; j < NumRecs; j++) {
                         val = (long)(randLong());
@@ -68,7 +68,7 @@ public class GenBinaryDataFile {
             }
 
             // Generate sorted file
-            else if (args[3].equals("sorted")) {
+            else if (args[2].equals("sorted")) {
                 val = 0;
                 val2 = 0.0;
                 for (int i = 0; i < filesize; i++)
@@ -81,16 +81,19 @@ public class GenBinaryDataFile {
             }
 
             // Generate reverse sorted file
-            else if (args[3].equals("reverseSorted")) {
+            else if (args[2].equals("reverseSorted")) {
                 val = 0;
-                Double d = Double.MAX_VALUE;
+                Double d = 100000.0;
                 val2 = d.doubleValue();
                 for (int i = 0; i < filesize; i++)
                     for (int j = 0; j < NumRecs; j++) {
+// System.out.println(val2);
+                        file.writeDouble(val2);
                         file.writeLong(val);
                         val++;
-                        file.writeDouble(val2);
-                        val2 -= 0.0001;
+
+                        val2 -= 1;
+
                     }
             }
 

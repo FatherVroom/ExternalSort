@@ -2,6 +2,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.RandomAccessFile;
 import student.TestCase;
 
 /**
@@ -16,6 +17,7 @@ public class ParserTest extends TestCase {
     private String numOfBlocks;
     private String fileName;
     private String badFileName;
+    private String genType;
     private String args[];
 
     /**
@@ -29,12 +31,14 @@ public class ParserTest extends TestCase {
         // created
         fileName = "binaryInputTest.bin";
         badFileName = "FakeSource.bin";
+        genType = "random";
         // "binaryInputTest.bin" will only contain 1 block of data, or 512
         // records
         numOfBlocks = "8";
-        args = new String[2];
+        args = new String[3];
         args[0] = fileName;
         args[1] = numOfBlocks;
+        args[2] = genType;
         // creates binaryInputTest.bin, which is 1 block of 512 records
         GenBinaryDataFile.main(args);
         // creation of Parser that goes through "binaryInputTest.bin"
@@ -122,11 +126,44 @@ public class ParserTest extends TestCase {
      * buffer
      * 
      * @throws IOException
+     *             for something
      */
     public void testReplacementSelectionCaseOne() throws IOException {
-        String[] args = { "caseOneFile.bin", "8" };
+        String[] args = { "caseOneFile.bin", "8", "random" };
         GenBinaryDataFile.main(args);
         Parser pc1 = new Parser(args[0]);
-        pc1.replacementSelection();
+        assertTrue(pc1.replacementSelection());
+    }
+
+
+    /**
+     * Tests the isSorted method when a file is already in order. meaning it is
+     * in ascending order and thus needs no sorting
+     * 
+     * @throws IOException
+     *             for something
+     */
+    public void testIsSortedAlready() throws IOException {
+        String[] args = { "sortedBinary.bin", "8", "sorted" };
+        GenBinaryDataFile.main(args);
+        Parser pc1 = new Parser(args[0]);
+        RandomAccessFile raf = new RandomAccessFile("sortedBinary.bin", "r");
+        assertEquals(0, pc1.isSorted(raf));
+    }
+
+
+    /**
+     * Tests the isSorted method when a file is completely reversed, meaning it
+     * is in descending order and thus is completely out of order
+     * 
+     * @throws IOException
+     *             for something
+     */
+    public void testIsSortedReversed() throws IOException {
+        String[] args = { "unsortedBinary.bin", "32", "reverseSorted" };
+        GenBinaryDataFile.main(args);
+        Parser pc1 = new Parser(args[0]);
+        RandomAccessFile raf = new RandomAccessFile("unsortedBinary.bin", "r");
+        assertEquals(16383, pc1.isSorted(raf));
     }
 }
