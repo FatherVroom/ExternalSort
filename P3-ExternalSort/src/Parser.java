@@ -117,12 +117,98 @@ public class Parser {
         // increment the current positon by 8191 so that each time
         // getNextByteBlock()() is
         // called, we move the RandomAccessFile over to the next block
-        int blockIncrease = BLOCK_SIZE - 1;
+        int blockIncrease = BLOCK_SIZE;
         currentPos += blockIncrease;
         raf.seek(currentPos);
 
         // returns block array after conversion from bytebuffer to byte array
         return block.array();
+    }
+    
+    /**
+     * Takes the specified binary file r and constructs a byte array the size
+     * of a single block from file position blockStart.
+     * 
+     * @param r - The binary file to get the next block from
+     * @param blockStart - The position in file r at which the block starts
+     * @return A byte array containing the specified block
+     * @throws IOException
+     */
+    public byte[] getNextByteBlockParams(RandomAccessFile r, int blockStart) 
+        throws IOException {
+        // Seek to position blockStart
+        r.seek(blockStart);
+        
+        // allocate space to create bytebuffer
+        ByteBuffer block = ByteBuffer.allocate(BLOCK_SIZE);
+        try {
+            // fill byte buffer with contents of block from blockStart
+            for (int i = 0; i < BLOCK_SIZE; i++) {
+                // reads a byte from the file of data blocks
+                byte b = r.readByte();
+                // places byte into bytebuffer
+                block.put(b);
+            }
+        }
+        catch (EOFException e) {
+            throw new EOFException("End of the file titled, " + fileName
+                + ", has been reached. File must have at least 1 block of " + 
+                "records (512 records).");
+        }
+        
+        // returns block array after conversion from bytebuffer to byte array
+        return block.array();
+    }
+    
+    /**
+     * Parses a file, checking for the number of occurrences in which a run
+     * is broken (record i + 1 < record i).
+     * 
+     * @param r - The file to be parsed
+     * @return The number of errors found in file r
+     * @throws IOException
+     */
+    public int numErrors(RandomAccessFile r) throws IOException {
+        int errorCount = 0;     //Tracks number of errors found
+        int fileRecordPos = 0;  //Tracks which record of the file we're on
+        int bytePos = 0;        //Tracks what byte of file we're on
+        long blockCounter = 0;      //Current block of sortedFile
+        long totalBlocks = getNumOfBlocks();    //Total blocks in file
+        InputBuffer inBuf = null;   //InputBuffer to hold block
+        
+        // Seek to start of file
+        r.seek(bytePos);
+        
+        //While not at E.O.F., get next block and check for errors
+        while (blockCounter < totalBlocks) {
+            //Fill Input Buffer, get Record array
+            inBuf = new InputBuffer(getNextByteBlockParams(r, bytePos));
+            inBuf.fillRecords();
+            Record[] blockRecords = inBuf.getRecords();
+            
+            //Loop through Record array, checking for errors
+            for (int i = 0; i < blockRecords.length - 1; i++) {
+                if (blockRecords[i + 1].compareTo(blockRecords[i]) < 0) {
+                    errorCount++;
+                    
+                    //Optional error message
+//                    System.out.println("Error in block # " + blockCounter + 1 +
+//                        " at File Record position " + fileRecordPos + 
+//                        ", File Byte position " + bytePos + ": Record # " + 
+//                        i + 1 + " (Value: " + blockRecords[i + 1].getKey() +  
+//                        ") < Record # " + i + " (Value: " + 
+//                        blockRecords[i + 1].getKey() + ")");
+                    
+                }
+                //Increment counters
+                fileRecordPos++;
+                bytePos += 16;
+            }
+            //Increment blockCounter
+            blockCounter++;
+        }
+        //Return number of errors found
+        return errorCount;
     }
 
 
@@ -341,5 +427,7 @@ public class Parser {
         }
         return errorCount;
     }
+    
+    
 
 }
