@@ -46,6 +46,51 @@ public class MinHeapTest extends TestCase {
         }
         assertNotNull(e);
     }
+    
+    /**
+     * Tests the structure of an 8 Block Heap of Doubles
+     */
+    public void test8BlockBuildHeapDoubles() {
+        Double[] heapArray = new Double[4096];
+        Double d = 4096.0;
+        for (int i = 0; i < 4096; i++) {
+            heapArray[i] = d;
+            d -= 1.0;
+        }
+        MinHeap<Double> mhd = new MinHeap<Double>(heapArray, 4096, 4096);
+        Double lastRemoved = mhd.removeMin();
+        for (int i = 0; i < 4095; i++) {
+            Double removed = mhd.removeMin();
+            System.out.println(removed);
+            assertTrue(lastRemoved <= removed);
+            lastRemoved = removed;
+        }
+    }
+    
+    /**
+     * Tests the structure of an 8 Block Heap of Records
+     */
+    public void test8BlockBuildHeapRecords() {
+        Record[] heapArray = new Record[4096];
+        double d = 4096.0;
+        for (int i = 0; i < 4096; i++) {
+            ByteBuffer recBuf = ByteBuffer.allocate(Double.BYTES + Long.BYTES);
+            recBuf.putLong(i);
+            recBuf.putDouble(d);
+            Record r = new Record(recBuf.array());
+            heapArray[i] = r;
+            d -= 1.0;
+        }
+        MinHeap<Record> mhr = new MinHeap<Record>(heapArray, 4096, 4096);
+        Record lastRemoved = mhr.removeMin();
+        //System.out.println(lastRemoved.getKey());
+        for (int i = 0; i < 4095; i++) {
+            Record removed = mhr.removeMin();
+            //System.out.println(removed.getKey());
+            assertTrue(lastRemoved.compareTo(removed) <= 0);
+            lastRemoved = removed;
+        }
+    }
 
 
     /**
