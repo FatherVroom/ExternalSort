@@ -3,12 +3,11 @@
 // These assertions will check valid heap positions
 
 /**
- * 
  * MinHeap class which is meant to hold generic types T. A MinHeap's root is the
  * minimum value in the entire heap. It h as extended abilities that allow for
  * replacement selection.
  * 
- * @author Aniket Adhikari, Chris Koehler
+ * @author CS Staff, Aniket Adhikari, Chris Koehler
  * @version 04.03.2022
  *
  * @param <T>
@@ -114,8 +113,8 @@ public class MinHeap<T extends Comparable<T>> {
      * Return true if pos a leaf position, false otherwise
      * 
      * @param pos
-     *            is the position of the heap element that we are determining is
-     *            a leaf or not. A leaf would be an element that has no
+     *            is the position of the heap element that we are determining 
+     *            is a leaf or not. A leaf would be an element that has no
      *            children, left or right.
      * @return true if the element at the specified position is a leaf, false
      *         otherwise
@@ -127,8 +126,8 @@ public class MinHeap<T extends Comparable<T>> {
 
     /**
      * Inserts an element of type T into the heap. The element is placed at the
-     * end of the heap (last position) and is subsequently sifted up so that the
-     * element is in the right place
+     * end of the heap (last position) and is subsequently sifted up so that 
+     * the element is in the right place
      * 
      * @param key
      *            element to be inserted into the heap
@@ -182,7 +181,6 @@ public class MinHeap<T extends Comparable<T>> {
 
 
     /**
-     * 
      * Reactivates a logically empty heap by converting the deactivated portion
      * to the active portion, then rebuilding the heap
      * 

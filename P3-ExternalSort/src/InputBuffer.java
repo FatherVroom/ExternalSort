@@ -2,9 +2,9 @@ import java.nio.ByteBuffer;
 
 /**
  * InputBuffer class which takes in a byte array
- * and is meant to convert this byte array into an array of Records of size 512.
- * The input buffer only has space for 512 records, or 1 block of records. These
- * records can be replaced by other blocks.
+ * and is meant to convert this byte array into an array of Records of size 512
+ * The input buffer only has space for 512 records, or 1 block of records. 
+ * These records can be replaced by other blocks.
  * 
  * @author Aniket Adhikari, Chris Koehler
  * @version 6 April 2022

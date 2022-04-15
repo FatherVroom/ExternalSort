@@ -1,4 +1,3 @@
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import student.TestCase;
 
@@ -31,7 +30,8 @@ public class InputBufferTest extends TestCase {
 
     /**
      * Tests the fillRecords() method and makes sure that it creates the proper
-     * size of records. Also makes sure the size of the inputBuffer is increased
+     * size of records. Also makes sure the size of the inputBuffer is 
+     * increased
      */
     public void testFillRecords() {
         assertTrue(ib.isEmpty());

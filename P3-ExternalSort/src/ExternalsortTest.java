@@ -1,23 +1,24 @@
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import student.TestCase;
 
 /**
+ * Tests methods of Externalsort and output of the program to stdOut
+ * 
  * @author Aniket Adhikari, Chris Koehler
  * @version 21 March 2022
  */
 public class ExternalsortTest extends TestCase {
-    private String[] args;
 
     /**
      * set up for tests
      */
     public void setUp() {
-//        args = new String[2];
-//        args[0] = "sampleInput16.bin";
-//        args[1] = "8";
+        //Nothing to initialize, intentionally left blank
     }
     
+    /**
+     * Tests exception thrown in main method
+     */
     public void testExternalSortException() {
         Exception d = null;
         String[] fakeArgs = { "FakeFile.bin" };
@@ -31,15 +32,12 @@ public class ExternalsortTest extends TestCase {
         }
         assertNotNull(d);
     }
-
-
-    /**
-     * Get code coverage of the class declaration.
-     */
-    public void testExternalsortInit() {
-        
-    }
     
+    /**
+     * Tests program output with 8 block random file
+     * 
+     * @throws IOException
+     */
     public void testOutput8BlockRandom() throws IOException {
         String[] args = { "ExternalSort8BlockRandom.bin", "8", "random" };
         GenBinaryDataFile.main(args);
@@ -52,6 +50,11 @@ public class ExternalsortTest extends TestCase {
         systemOut().clearHistory();
     }
     
+    /**
+     * Tests program output with 32 block random file
+     * 
+     * @throws IOException
+     */
     public void testOutput32BlockRandom() throws IOException {
         String[] args = { "ExternalSort32BlockRandom.bin", "32", "random" };
         GenBinaryDataFile.main(args);
@@ -64,6 +67,11 @@ public class ExternalsortTest extends TestCase {
         systemOut().clearHistory();
     }
     
+    /**
+     * Tests program output with 8 block sorted file
+     * 
+     * @throws IOException
+     */
     public void testOutput8BlockSorted() throws IOException {
         String[] args = { "ExternalSort8BlockSorted.bin", "8", "sorted" };
         GenBinaryDataFile.main(args);
@@ -76,6 +84,11 @@ public class ExternalsortTest extends TestCase {
         systemOut().clearHistory();
     }
     
+    /**
+     * Tests program output with 32 block sorted file
+     * 
+     * @throws IOException
+     */
     public void testOutput32BlockSorted() throws IOException {
         String[] args = { "ExternalSort32BlockSorted.bin", "32", "sorted" };
         GenBinaryDataFile.main(args);
@@ -88,8 +101,14 @@ public class ExternalsortTest extends TestCase {
         systemOut().clearHistory();
     }
     
+    /**
+     * Tests program output with 8 block reverse sorted file
+     * 
+     * @throws IOException
+     */
     public void testOutput8BlockReverseSorted() throws IOException {
-        String[] args = { "ExternalSort8BlockReverseSorted.bin", "8", "reverseSorted" };
+        String[] args = 
+            { "ExternalSort8BlockReverseSorted.bin", "8", "reverseSorted" };
         GenBinaryDataFile.main(args);
         args = new String[1];
         args[0] = "ExternalSort8BlockReverseSorted.bin";
@@ -100,8 +119,14 @@ public class ExternalsortTest extends TestCase {
         systemOut().clearHistory();
     }
     
+    /**
+     * Tests program output with 32 block reverse sorted file
+     * 
+     * @throws IOException
+     */
     public void testOutput32BlockReverseSorted() throws IOException {
-        String[] args = { "ExternalSort32BlockReverseSorted.bin", "32", "reverseSorted" };
+        String[] args = 
+            { "ExternalSort32BlockReverseSorted.bin", "32", "reverseSorted" };
         GenBinaryDataFile.main(args);
         args = new String[1];
         args[0] = "ExternalSort32BlockReverseSorted.bin";

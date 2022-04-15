@@ -11,36 +11,45 @@ import java.io.BufferedOutputStream;
 import java.io.DataOutputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-// import java.math.*;
 import java.util.Random;
 
 /**
+ * Generates binary data files representing Records (long ID followed by
+ * double key) according to specified size (in blocks of 512 records) and
+ * type (random, sorted min to max, or reverse sorted max to min.
  * 
- * 
- * @author Aniket Adhikari, Chris Koehler
- *
+ * @author CS Staff, Aniket Adhikari, Chris Koehler
+ * @version 2022-04-14
  */
 public class GenBinaryDataFile {
 
+    /** Number of records per block */
     static final int NumRecs = 512; // Because they are short ints
 
     /** Initialize the random variable */
     static private Random value = new Random(); // Hold the Random class object
 
+    /**
+     * Generates a random long value
+     * 
+     * @return Random long value
+     */
     static long randLong() {
         return value.nextLong();
     }
 
-
+    /**
+     * Generates a random double value
+     * 
+     * @return Random double value
+     */
     static double randDouble() {
         return value.nextDouble();
     }
 
 
     /**
-     * main method which creates the generic binary data file. The first
-     * argument will be the name of the new generic file and the second argument
-     * will be the number of blocks
+     * main method which creates the generic binary data file.
      * 
      * First param is filename of File to be created
      * Second param is number of blocks to be created in file
@@ -49,14 +58,16 @@ public class GenBinaryDataFile {
      * "sorted" - populates the file in sorted order
      * "reverseSorted" - populates the file in reverse sorted order
      * 
-     * @param args
+     * @param args - {filename, numBlocks, fileType}
      */
     public static void main(String args[]) {
         try {
             long val = 0;
             double val2 = 0;
-            assert (args.length == 3) : "\nUsage: GenBinaryDataFile <filename> <size>"
-                + " <genType>\nOptions \nSize is measured in blocks of 8192 bytes";
+            assert (args.length == 3) : 
+                "\nUsage: GenBinaryDataFile <filename> <size>"
+                + " <genType>\nOptions \nSize is measured in blocks" + 
+                "of 8192 bytes";
 
             int filesize = Integer.parseInt(args[1]); // Size of file in blocks
             DataOutputStream file = new DataOutputStream(
@@ -66,8 +77,6 @@ public class GenBinaryDataFile {
             if (args[2].equals("random")) {
                 for (int i = 0; i < filesize; i++)
                     for (int j = 0; j < NumRecs; j++) {
-                        //val = (long)(randLong());
-                        //file.writeLong(val);
                         val2 = (double)(randDouble());
                         file.writeDouble(val2);
                         file.writeDouble(val2);
@@ -94,15 +103,10 @@ public class GenBinaryDataFile {
                 val2 = d.doubleValue();
                 for (int i = 0; i < filesize; i++)
                     for (int j = 0; j < NumRecs; j++) {
-// System.out.println(val2);
-
-//                        file.writeLong(val);
                         file.writeDouble(val2);
                         file.writeDouble(val2);
                         val++;
-
                         val2 -= 1;
-
                     }
             }
 
