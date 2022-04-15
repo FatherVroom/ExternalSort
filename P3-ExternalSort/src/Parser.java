@@ -25,7 +25,7 @@ public class Parser {
     private int runCount;
     private int numErrors;
     private boolean sortStatus;
-    private File inputFile;
+    File inputFile;
 
     /**
      * Creates a Parser object, which is meant to go through fileName
@@ -33,6 +33,8 @@ public class Parser {
      * @param fileName
      *            the name of the file that is meant to be found
      * @throws IOException
+     *             when there is a seek done outside of the file or the file
+     *             does not exist
      */
     public Parser(String fileName) throws IOException {
         this.fileName = fileName;
@@ -56,18 +58,36 @@ public class Parser {
         }
     }
 
-    
+
+    /**
+     * Gets the number of run files that have been made
+     * 
+     * @return number of run files
+     */
     public int getRunCount() {
         return runCount;
     }
-    
+
+
+    /**
+     * Gets the number of sorting errors that have occured in replacement sort
+     * 
+     * @return number of errors
+     */
     public int getNumErrors() {
         return numErrors;
     }
-    
+
+
+    /**
+     * Gets the sorting status of the parser
+     * 
+     * @return the sorting status
+     */
     public boolean getSortStatus() {
         return sortStatus;
     }
+
 
     /**
      * Prints the first Record of each block from the file sortedFile as
@@ -76,6 +96,7 @@ public class Parser {
      * @param sortedFile
      *            - The file to be printed according to spec
      * @throws IOException
+     *             if a seek is done outside the file
      */
     public void printToStdOut(RandomAccessFile sortedFile) throws IOException {
         int printCounter = 0; // Tracks numRecords printed on current line
@@ -141,7 +162,7 @@ public class Parser {
         // called, we move the RandomAccessFile over to the next block
 // int blockIncrease = BLOCK_SIZE; // [potential error spot here]
         currentPos += BLOCK_SIZE;
-        //System.out.println(currentPos);
+        // System.out.println(currentPos);
         raf.seek(currentPos);
 
         // returns block array after conversion from bytebuffer to byte array
@@ -159,6 +180,7 @@ public class Parser {
      *            - The position in file r at which the block starts
      * @return A byte array containing the specified block
      * @throws IOException
+     *             when you try to go over the file limits
      */
     public byte[] getNextByteBlockParams(RandomAccessFile r, int blockStart)
         throws IOException {
@@ -192,7 +214,7 @@ public class Parser {
      * is broken (record i + 1 < record i).
      * 
      * @param r
-     *            - The file to be parsed
+     *            The file to be parsed
      * @return The number of errors found in file r
      * @throws IOException
      */
@@ -219,49 +241,50 @@ public class Parser {
 
             // Loop through Record array, checking for errors
             for (int i = 0; i < blockRecords.length - 1; i++) {
-//                if (blockRecords[i + 1].compareTo(blockRecords[i]) < 0) {
-//                    errorCount++;
+// if (blockRecords[i + 1].compareTo(blockRecords[i]) < 0) {
+// errorCount++;
 //
-//                    // Optional error message
-////                    System.out.println("Error in block # " + blockCounter
-////                        + " at File Record position " + fileRecordPos
-////                        + ", File Byte position " + bytePos + ": Record # " + i
-////                        + 1 + " (Value: " + blockRecords[i + 1].getKey()
-////                        + ") < Record # " + i + " (Value: " + blockRecords[i
-////                            + 1].getKey() + ")");
-////                    System.out.println("-------------------------------------");
-//                    
-                    
+// // Optional error message
+//// System.out.println("Error in block # " + blockCounter
+//// + " at File Record position " + fileRecordPos
+//// + ", File Byte position " + bytePos + ": Record # " + i
+//// + 1 + " (Value: " + blockRecords[i + 1].getKey()
+//// + ") < Record # " + i + " (Value: " + blockRecords[i
+//// + 1].getKey() + ")");
+//// System.out.println("-------------------------------------");
 //
-//                }
+
+//
+// }
                 currRec = blockRecords[i];
                 nextRec = blockRecords[i + 1];
-                
-                //Compare firstRec of this block to lastRac of prev block
+
+                // Compare firstRec of this block to lastRac of prev block
                 if (i == 0 && blockCounter != 0) {
                     if (currRec.compareTo(lastRec) < 0) {
                         errorCount++;
-//                        System.out.println("Error at start of block # " + blockCounter + 
-//                            " at File Record position " + blockRecords[i] + 
-//                            " (Value: " + blockRecords[i].getKey() + ")");
+// System.out.println("Error at start of block # " + blockCounter +
+// " at File Record position " + blockRecords[i] +
+// " (Value: " + blockRecords[i].getKey() + ")");
                     }
                 }
-                
-                //Compare currRec of this block to nextRec of this block
+
+                // Compare currRec of this block to nextRec of this block
                 if (nextRec.compareTo(currRec) < 0) {
                     errorCount++;
-//                    System.out.println("Error in block # " + blockCounter + 
-//                        " at File Record position " + blockRecords[i] + 
-//                        " (Value: " + blockRecords[i].getKey() + ")");
-//                    System.out.println("Error: Block # " + blockCounter + " currRecord at pos " + i + " (Value: " + currRec.getKey() + 
-//                        ") > nextRecord (Value: " + nextRec.getKey());
+// System.out.println("Error in block # " + blockCounter +
+// " at File Record position " + blockRecords[i] +
+// " (Value: " + blockRecords[i].getKey() + ")");
+// System.out.println("Error: Block # " + blockCounter + " currRecord at pos " +
+// i + " (Value: " + currRec.getKey() +
+// ") > nextRecord (Value: " + nextRec.getKey());
                 }
-                
+
                 // Increment counters
                 fileRecordPos++;
                 bytePos += 16;
             }
-            //If not at E.O.F., keep track of block's last record
+            // If not at E.O.F., keep track of block's last record
             if (blockCounter != totalBlocks) {
                 lastRec = nextRec;
             }
@@ -286,7 +309,9 @@ public class Parser {
      * element in the MinHeap, decrement heap size, and place the minimum record
      * into the OutputBuffer
      * 
+     * @return true if replacement selection was successful and false if not
      * @throws IOException
+     *             when the seek is done outside the file
      */
     public boolean replacementSelection() throws IOException {
 
@@ -295,7 +320,7 @@ public class Parser {
         Record[] heapArray = new Record[MAX_HEAP_SIZE];
         runCount++;
         sortStatus = false;
-//        MinHeap<Record> mh = new MinHeap<Record>(heapArray, 0, MAX_HEAP_SIZE);
+// MinHeap<Record> mh = new MinHeap<Record>(heapArray, 0, MAX_HEAP_SIZE);
 
         // Get block with input buffer, convert to Records, add to heapArray
         // Maybe replace with helper method called fillHeapArray(InputBuffer)
@@ -304,23 +329,24 @@ public class Parser {
             inBuf = new InputBuffer(getNextByteBlock());
             inBuf.fillRecords();
             Record[] blockRecords = inBuf.getRecords();
-//            for (int j = 0; j < NUM_RECORDS; j++) {
-//                mh.insert(blockRecords[j]);
-//            }
-            
+// for (int j = 0; j < NUM_RECORDS; j++) {
+// mh.insert(blockRecords[j]);
+// }
+
             for (int j = 0; j < NUM_RECORDS; j++) {
                 heapArray[heapArrIndex] = blockRecords[j];
                 heapArrIndex++;
             }
         }
-        MinHeap<Record> mh = new MinHeap<Record>(heapArray, MAX_HEAP_SIZE, MAX_HEAP_SIZE);
+        MinHeap<Record> mh = new MinHeap<Record>(heapArray, MAX_HEAP_SIZE,
+            MAX_HEAP_SIZE);
         // organize heap
-        //mh.buildHeap();
+        // mh.buildHeap();
 
         // PHASE 2: Replacement selection
         // Create Run File and Output Buffer
         File runFile = new File("runFile.bin");
-        
+
 // runFile.createNewFile();
         RandomAccessFile runRaf = new RandomAccessFile(runFile, "rw");
         runRaf.setLength(raf.length());
@@ -331,17 +357,17 @@ public class Parser {
             while (mh.heapSize() >= 1) {
                 // Flush output buffer if necessary
                 if (outBuf.isFull()) {
-//                    outBuf.printRecordContents();   //FOR TESTING
-//                    System.out.println("Before write: " + runRaf.getFilePointer());
+// outBuf.printRecordContents(); //FOR TESTING
+// System.out.println("Before write: " + runRaf.getFilePointer());
                     outBuf.writeToRunFile(runRaf);
-//                    System.out.println("After write: " + runRaf.getFilePointer());
-//                    byte[] test = new byte[8192];
-//                    test = outBuf.convertRecsToByteForm();
-//                    ByteBuffer bb = ByteBuffer.wrap(test);
-//                    for (int i = 0; i < BLOCK_SIZE; i++) {
-//                        System.out.println("Record # " + i + " id = " + bb.getFloat());
-//                        System.out.println("Record # " + i + " key = " + bb.getDouble());
-//                    }
+// System.out.println("After write: " + runRaf.getFilePointer());
+// byte[] test = new byte[8192];
+// test = outBuf.convertRecsToByteForm();
+// ByteBuffer bb = ByteBuffer.wrap(test);
+// for (int i = 0; i < BLOCK_SIZE; i++) {
+// System.out.println("Record # " + i + " id = " + bb.getFloat());
+// System.out.println("Record # " + i + " key = " + bb.getDouble());
+// }
                     outBuf = new OutputBuffer();
                 }
                 // Write next minimum from Heap to Output Buffer
@@ -351,13 +377,13 @@ public class Parser {
             // terminate program
             outBuf.writeToRunFile(runRaf);
             numErrors += numErrors(runRaf);
-            //return (numErrors == 0) && (runRaf.length() == raf.length());
+            // return (numErrors == 0) && (runRaf.length() == raf.length());
             if (numErrors == 0) {
                 runFile.renameTo(inputFile);
                 sortStatus = true;
                 return true;
             }
-            //return (numErrors(runRaf) == 0);
+            // return (numErrors(runRaf) == 0);
         }
 
         // CASE: Input File >= 8 Blocks, replacement selection necessary
@@ -376,8 +402,8 @@ public class Parser {
         // TODO: Make this while loop terminate when getNextByteBlock()()
         // exception thrown
         // (this works but might as well)
-        //long blockCounter = 8; // Already processed first 8 in MinHeap
-        long blockCounter = 9;    //Possible error point
+        // long blockCounter = 8; // Already processed first 8 in MinHeap
+        long blockCounter = 9; // Possible error point
         long totalBlocks = getNumOfBlocks();
 
         // While there are more blocks in input file, continue
@@ -458,24 +484,21 @@ public class Parser {
                 outBuf.addRecord(removedRec);
             }
         }
-        //Get number of errors in run file
+        // Get number of errors in run file
         numErrors += numErrors(runRaf);
-        
-        //If only one run and no errors, file is sorted so return
+
+        // If only one run and no errors, file is sorted so return
         if (numErrors == 0 && runCount == 1) {
             sortStatus = true;
             return true;
         }
-        
-        //Else if numErrors is one less than num runs, multiple runs in file
+
+        // Else if numErrors is one less than num runs, multiple runs in file
         else if (numErrors == runCount - 1) {
             return true;
         }
-        
-        //Else, postconditions not met, replacementSelection failed
-        else {
-            return false;
-        }
+
+        return false;
     }
 
 

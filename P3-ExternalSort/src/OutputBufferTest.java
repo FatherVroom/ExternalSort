@@ -2,6 +2,13 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import student.TestCase;
 
+/**
+ * Tests the OutputBuffer class
+ * 
+ * @author Aniket Adhikari, Chris Koehler
+ * @version 2 April 2022
+ *
+ */
 public class OutputBufferTest extends TestCase {
 
     private OutputBuffer outBuff;
@@ -71,48 +78,6 @@ public class OutputBufferTest extends TestCase {
         // make sure the original byte array matches the converted one
         for (int i = 0; i < b.length; i++) {
             assertEquals(b[i], originalBytes[i]);
-        }
-    }
-    
-    public void testConvertRecsToByteFormNew() {
-        //Populate minHeap with 8 blocks of Records
-        Record[] heapArray = new Record[4096];
-        double d = 4096.0;
-        for (int i = 0; i < 4096; i++) {
-            ByteBuffer recBuf = ByteBuffer.allocate(Double.BYTES + Long.BYTES);
-            recBuf.putLong(i);
-            recBuf.putDouble(d);
-            Record rec = new Record(recBuf.array());
-            heapArray[i] = rec;
-            d -= 1.0;
-        }
-        MinHeap<Record> mhr = new MinHeap<Record>(heapArray, 4096, 4096);
-        
-        //Populate outputBuffer with one block
-        OutputBuffer ob = new OutputBuffer();
-        while (!ob.isFull()) {
-            ob.addRecord(mhr.removeMin());
-        }
-        
-        //Confirm that records of output buffer are in correct order
-        Record[] obRecs = ob.getRecords();
-        for (int i = 0; i < 512 - 1; i++) {
-            assertTrue(obRecs[i].compareTo(obRecs[i + 1]) <= 0);
-        }
-        
-        //Check that conversion to byte form is working properly
-        //Old convertRecsToByteForm
-        byte[] thisRec = new byte[16];
-        byte[] blockRecs = new byte[8192];
-        long expectedID = 4095;
-        double expectedKey = 1.0;
-        blockRecs = ob.convertRecsToByteForm();
-        ByteBuffer bb = ByteBuffer.wrap(blockRecs);
-        for (int i = 0; i < 512; i++) {
-            assertEquals(expectedID, bb.getLong());
-            assertEquals(expectedKey, bb.getDouble(), 0.01);
-            expectedID--;
-            expectedKey += 1.0;
         }
     }
 

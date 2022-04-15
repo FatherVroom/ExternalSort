@@ -12,8 +12,8 @@ import java.nio.ByteBuffer;
 public class OutputBuffer {
     // Fields
     private Record[] records;
-    private final int BUFFER_CAPACITY = 8192;
-    private final int RECORD_CAPACITY = 512;
+    private final static int BUFFER_CAPACITY = 8192;
+    private final static int RECORD_CAPACITY = 512;
     private int size;
 
     // Constructors
@@ -28,19 +28,10 @@ public class OutputBuffer {
 
     // Methods
     /**
-     * Getter method for Record[] records
-     * 
-     * @return
-     */
-    public Record[] getRecords() {
-        return records;
-    }
-    
-    /**
      * Adds a Record object to the Record array backing this OutputBuffer
      * 
      * @param r
-     *            - The Record to be added
+     *            The Record to be added
      */
     public boolean addRecord(Record r) {
         if (!isFull()) {
@@ -50,7 +41,11 @@ public class OutputBuffer {
         }
         return false;
     }
-    
+
+
+    /**
+     * prints the records of the output buffer
+     */
     public void printRecordContents() {
         for (int i = 0; i < size; i++) {
             System.out.println("Record # " + i + " = " + records[i].getKey());
@@ -84,8 +79,9 @@ public class OutputBuffer {
      * Writes contents of this OutputBuffer to the specified runFile
      * 
      * @param raf
-     *            - The runFile to write the buffer to
+     *            The runFile to write the buffer to
      * @throws IOException
+     *             if write is incorrect
      */
     public void writeToRunFile(RandomAccessFile raf) throws IOException {
         byte[] recsByteForm = convertRecsToByteForm();

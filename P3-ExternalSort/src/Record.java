@@ -1,7 +1,8 @@
 import java.nio.ByteBuffer;
 
 /**
- * Holds a single record
+ * Holds a single record object. A record object contain a key (double) and
+ * value (long)
  * 
  * @author CS Staff, Aniket Adhikari, Chris Koehler
  * @version 2020-10-15
@@ -74,6 +75,13 @@ public class Record implements Comparable<Record> {
     }
 
 
+    /**
+     * Setter method that sets the key portion of the record object. Also alters
+     * the completeRecord attribute.
+     * 
+     * @param k
+     *            the new key
+     */
     public void setKey(double k) { // ** complete in constructor **
         ByteBuffer bb = ByteBuffer.allocate(Double.BYTES);
         bb.putDouble(k);
@@ -87,6 +95,13 @@ public class Record implements Comparable<Record> {
     }
 
 
+    /**
+     * Setter method that sets the value portion of the record object. Also
+     * alters the completeRecord attribute.
+     * 
+     * @param v
+     *            the new value
+     */
     public void setValue(long v) { // ** complete in constructor **
         ByteBuffer bb = ByteBuffer.allocate(Long.BYTES);
         bb.putLong(v);
@@ -101,8 +116,8 @@ public class Record implements Comparable<Record> {
     /**
      * Compare Two Records based on their keys
      * 
-     * @param o
-     *            - The Record to be compared.
+     * @param toBeCompared
+     *            The Record to be compared.
      * @return A negative integer, zero, or a positive integer as this record
      *         is less than, equal to, or greater than the supplied record
      *         object.

@@ -27,7 +27,7 @@ public class MinHeapTest extends TestCase {
      * Tests the initialization of an invalid minheap.
      */
     public void testInit() {
-        Double d[] = new Double[1];
+        Double[] d = new Double[1];
         MinHeap<Double> mhd = null;
         AssertionError e = null;
         try {
@@ -46,7 +46,8 @@ public class MinHeapTest extends TestCase {
         }
         assertNotNull(e);
     }
-    
+
+
     /**
      * Tests the structure of an 8 Block Heap of Doubles
      */
@@ -66,7 +67,8 @@ public class MinHeapTest extends TestCase {
             lastRemoved = removed;
         }
     }
-    
+
+
     /**
      * Tests the structure of an 8 Block Heap of Records
      */
@@ -77,16 +79,16 @@ public class MinHeapTest extends TestCase {
             ByteBuffer recBuf = ByteBuffer.allocate(Double.BYTES + Long.BYTES);
             recBuf.putLong(i);
             recBuf.putDouble(d);
-            Record rec = new Record(recBuf.array());
-            heapArray[i] = rec;
+            Record r = new Record(recBuf.array());
+            heapArray[i] = r;
             d -= 1.0;
         }
         MinHeap<Record> mhr = new MinHeap<Record>(heapArray, 4096, 4096);
         Record lastRemoved = mhr.removeMin();
-        //System.out.println(lastRemoved.getKey());
+        // System.out.println(lastRemoved.getKey());
         for (int i = 0; i < 4095; i++) {
             Record removed = mhr.removeMin();
-            //System.out.println(removed.getKey());
+            // System.out.println(removed.getKey());
             assertTrue(lastRemoved.compareTo(removed) <= 0);
             lastRemoved = removed;
         }
@@ -151,6 +153,9 @@ public class MinHeapTest extends TestCase {
     }
 
 
+    /**
+     * tests heapSize
+     */
     public void testHeapSize() {
         ByteBuffer rec = ByteBuffer.allocate(Double.BYTES + Long.BYTES);
         assertEquals(0, mh.heapSize());
@@ -626,8 +631,8 @@ public class MinHeapTest extends TestCase {
     }
 
 
-    /*
-     * tests the siftUp method when assertions are thrown
+    /**
+     * tests the siftup errors
      */
     public void testSiftUpErrors() {
         Double[] d = new Double[7];
