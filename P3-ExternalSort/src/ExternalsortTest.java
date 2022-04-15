@@ -39,5 +39,60 @@ public class ExternalsortTest extends TestCase {
     public void testExternalsortInit() {
         
     }
+    
+    public void testOutput8BlockRandom() throws IOException {
+        String[] args = { "ExternalSort8BlockRandom.bin", "8", "random" };
+        GenBinaryDataFile.main(args);
+        args = new String[1];
+        args[0] = "ExternalSort8BlockRandom.bin";
+        Parser pc1 = new Parser(args[0]);
+        Externalsort.main(args);
+        //System.out.println(systemOut().getHistory().length());
+    }
+    
+    public void testOutput32BlockRandom() throws IOException {
+        String[] args = { "ExternalSort32BlockRandom.bin", "32", "random" };
+        GenBinaryDataFile.main(args);
+        args = new String[1];
+        args[0] = "ExternalSort32BlockRandom.bin";
+        Parser pc1 = new Parser(args[0]);
+        Externalsort.main(args);
+    }
+    
+    public void testOutput8BlockSorted() throws IOException {
+        String[] args = { "ExternalSort8BlockSorted.bin", "8", "sorted" };
+        GenBinaryDataFile.main(args);
+        args = new String[1];
+        args[0] = "ExternalSort8BlockSorted.bin";
+        Parser pc1 = new Parser(args[0]);
+        Externalsort.main(args);
+    }
+    
+    public void testOutput32BlockSorted() throws IOException {
+        String[] args = { "ExternalSort32BlockSorted.bin", "32", "sorted" };
+        GenBinaryDataFile.main(args);
+        args = new String[1];
+        args[0] = "ExternalSort32BlockSorted.bin";
+        Parser pc1 = new Parser(args[0]);
+        Externalsort.main(args);
+    }
+    
+    public void testOutput8BlockReverseSorted() throws IOException {
+        String[] args = { "ExternalSort8BlockReverseSorted.bin", "8", "reverseSorted" };
+        GenBinaryDataFile.main(args);
+        args = new String[1];
+        args[0] = "ExternalSort8BlockReverseSorted.bin";
+        Parser pc1 = new Parser(args[0]);
+        Externalsort.main(args);
+    }
+    
+    public void testOutput32BlockReverseSorted() throws IOException {
+        String[] args = { "ExternalSort32BlockReverseSorted.bin", "32", "reverseSorted" };
+        GenBinaryDataFile.main(args);
+        args = new String[1];
+        args[0] = "ExternalSort32BlockReverseSorted.bin";
+        Parser pc1 = new Parser(args[0]);
+        Externalsort.main(args);
+    }
 
 }

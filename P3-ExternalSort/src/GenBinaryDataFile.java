@@ -60,9 +60,10 @@ public class GenBinaryDataFile {
             if (args[2].equals("random")) {
                 for (int i = 0; i < filesize; i++)
                     for (int j = 0; j < NumRecs; j++) {
-                        val = (long)(randLong());
-                        file.writeLong(val);
+                        //val = (long)(randLong());
+                        //file.writeLong(val);
                         val2 = (double)(randDouble());
+                        file.writeDouble(val2);
                         file.writeDouble(val2);
                     }
             }
@@ -88,9 +89,10 @@ public class GenBinaryDataFile {
                 for (int i = 0; i < filesize; i++)
                     for (int j = 0; j < NumRecs; j++) {
 // System.out.println(val2);
-                        
+
+//                        file.writeLong(val);
                         file.writeDouble(val2);
-                        file.writeLong(val);
+                        file.writeDouble(val2);
                         val++;
 
                         val2 -= 1;

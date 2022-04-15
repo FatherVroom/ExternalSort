@@ -134,24 +134,14 @@ public class ParserTest extends TestCase {
      * @throws IOException
      *             for something
      */
-    public void testReplacementSelectionCaseOne() throws IOException {
-        String[] args = { "caseOneFile.bin", "8", "random" };
+    public void testReplacementSelectionCaseOneRandom() throws IOException {
+        String[] args = { "caseUnoFile.bin", "8", "random" };
         GenBinaryDataFile.main(args);
         Parser pc1 = new Parser(args[0]);
-        assertTrue(pc1.replacementSelection());
-        RandomAccessFile raf = new RandomAccessFile(args[0], "r");
-        assertEquals(0, pc1.numErrors(raf));
-
-    }
-    
-    public void testReplacementSelectionCaseOneOrderly() throws IOException {
-        String[] args = { "caseOneFile.bin", "8", "reverseSorted" };
-        GenBinaryDataFile.main(args);
-        Parser pc1 = new Parser(args[0]);
-        assertTrue(pc1.replacementSelection());
-        //RandomAccessFile raf = new RandomAccessFile(args[0], "r");
-        //assertEquals(0, pc1.numErrors(raf));
-
+        boolean success = pc1.replacementSelection();
+        System.out.println("Runcount: " + pc1.getRunCount());
+        System.out.println("NumErrors: " + pc1.getNumErrors());
+        assertTrue(success);
     }
 
 
@@ -160,13 +150,15 @@ public class ParserTest extends TestCase {
      * 
      * @throws IOException
      */
-    public void testReplacementSelectionCaseTwo() throws IOException {
-        String[] args = { "caseOneFile.bin", "32", "random" };
+    public void testReplacementSelectionCaseTwoRandom() throws IOException {
+        String[] args = { "caseOneeFile.bin", "32", "random" };
         GenBinaryDataFile.main(args);
         Parser pc1 = new Parser(args[0]);
-
-        pc1.replacementSelection();
-
+        boolean success = pc1.replacementSelection();
+        System.out.println("Runcount: " + pc1.getRunCount());
+        System.out.println("NumErrors: " + pc1.getNumErrors());
+        assertTrue(success);
+        
     }
 
 
@@ -177,7 +169,7 @@ public class ParserTest extends TestCase {
      * @throws IOException
      *             for something
      */
-    public void testIsSortedAlready() throws IOException {
+    public void testnumErrorsSortedAlready() throws IOException {
         String[] args = { "sortedBinary.bin", "8", "sorted" };
         GenBinaryDataFile.main(args);
         Parser pc1 = new Parser(args[0]);
@@ -193,12 +185,38 @@ public class ParserTest extends TestCase {
      * @throws IOException
      *             for something
      */
-    public void testIsSortedReversed() throws IOException {
+    public void testnumErrorsReversed() throws IOException {
         String[] args = { "unsortedBinary.bin", "32", "reverseSorted" };
         GenBinaryDataFile.main(args);
         Parser pc1 = new Parser(args[0]);
         RandomAccessFile raf = new RandomAccessFile("unsortedBinary.bin", "r");
         assertEquals(16352, pc1.numErrors(raf));
+    }
+    
+    /**
+     * @throws IOException
+     */
+    public void testReplacementSelectionCaseOneRevSort() throws IOException {
+        String[] args = { "caseOneFilePlease.bin", "8", "reverseSorted" };
+        GenBinaryDataFile.main(args);
+        Parser pc1 = new Parser(args[0]);
+        boolean success = pc1.replacementSelection();
+        System.out.println("Runcount: " + pc1.getRunCount());
+        System.out.println("NumErrors: " + pc1.getNumErrors());
+        assertTrue(success);
+    }
+    
+    /**
+     * @throws IOException
+     */
+    public void testReplacementSelectionCaseTwoRevSort() throws IOException {
+        String[] args = { "caseOneFilePlease2.bin", "16", "reverseSorted" };
+        GenBinaryDataFile.main(args);
+        Parser pc1 = new Parser(args[0]);
+        boolean success = pc1.replacementSelection();
+        System.out.println("Runcount: " + pc1.getRunCount());
+        System.out.println("NumErrors: " + pc1.getNumErrors());
+        assertTrue(success);
     }
 
 }

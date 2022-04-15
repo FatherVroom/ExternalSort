@@ -23,6 +23,9 @@ public class Parser {
     private RandomAccessFile raf;
     private int currentPos;
     private int runCount;
+    private int numErrors;
+    private boolean sortStatus;
+    File inputFile;
 
     /**
      * Creates a Parser object, which is meant to go through fileName
@@ -36,8 +39,11 @@ public class Parser {
         // current position begins at 0, and will be incremented by 8191 each
         // time getNextByteBlock()() is called on the parser
         currentPos = 0;
+        runCount = 0;
+        numErrors = 0;
         try {
-            raf = new RandomAccessFile(fileName, "r");
+            inputFile = new File(fileName);
+            raf = new RandomAccessFile(inputFile, "r");
             // start the RandomAccessFile at the beginning of the file
             raf.seek(currentPos);
         }
@@ -50,6 +56,18 @@ public class Parser {
         }
     }
 
+    
+    public int getRunCount() {
+        return runCount;
+    }
+    
+    public int getNumErrors() {
+        return numErrors;
+    }
+    
+    public boolean getSortStatus() {
+        return sortStatus;
+    }
 
     /**
      * Prints the first Record of each block from the file sortedFile as
@@ -89,6 +107,7 @@ public class Parser {
 
             // Increment block counter
             blockCounter++;
+            printCounter++;
         }
     }
 
@@ -122,7 +141,7 @@ public class Parser {
         // called, we move the RandomAccessFile over to the next block
 // int blockIncrease = BLOCK_SIZE; // [potential error spot here]
         currentPos += BLOCK_SIZE;
-        System.out.println(currentPos);
+        //System.out.println(currentPos);
         raf.seek(currentPos);
 
         // returns block array after conversion from bytebuffer to byte array
@@ -184,6 +203,9 @@ public class Parser {
         long blockCounter = 0; // Current block of sortedFile
         long totalBlocks = getNumOfBlocks(); // Total blocks in file
         InputBuffer inBuf = null; // InputBuffer to hold block
+        Record currRec = null;
+        Record nextRec = null;
+        Record lastRec = null;
 
         // Seek to start of file
         r.seek(bytePos);
@@ -197,26 +219,51 @@ public class Parser {
 
             // Loop through Record array, checking for errors
             for (int i = 0; i < blockRecords.length - 1; i++) {
-                if (blockRecords[i + 1].compareTo(blockRecords[i]) < 0) {
-                    errorCount++;
-
-                    // Optional error message
-//                    System.out.println("Error in block # " + blockCounter
-//                        + " at File Record position " + fileRecordPos
-//                        + ", File Byte position " + bytePos + ": Record # " + i
-//                        + 1 + " (Value: " + blockRecords[i + 1].getKey()
-//                        + ") < Record # " + i + " (Value: " + blockRecords[i
-//                            + 1].getKey() + ")");
-//                    System.out.println("-------------------------------------");
+//                if (blockRecords[i + 1].compareTo(blockRecords[i]) < 0) {
+//                    errorCount++;
+//
+//                    // Optional error message
+////                    System.out.println("Error in block # " + blockCounter
+////                        + " at File Record position " + fileRecordPos
+////                        + ", File Byte position " + bytePos + ": Record # " + i
+////                        + 1 + " (Value: " + blockRecords[i + 1].getKey()
+////                        + ") < Record # " + i + " (Value: " + blockRecords[i
+////                            + 1].getKey() + ")");
+////                    System.out.println("-------------------------------------");
+//                    
                     
-//                    System.out.println("Error in block # " + blockCounter + 
-//                        " at File Record position " + fileRecordPos + 
-//                        " (Value: " + blockRecords[i].getKey() + ")");
-
+//
+//                }
+                currRec = blockRecords[i];
+                nextRec = blockRecords[i + 1];
+                
+                //Compare firstRec of this block to lastRac of prev block
+                if (i == 0 && blockCounter != 0) {
+                    if (currRec.compareTo(lastRec) < 0) {
+                        errorCount++;
+//                        System.out.println("Error at start of block # " + blockCounter + 
+//                            " at File Record position " + blockRecords[i] + 
+//                            " (Value: " + blockRecords[i].getKey() + ")");
+                    }
                 }
+                
+                //Compare currRec of this block to nextRec of this block
+                if (nextRec.compareTo(currRec) < 0) {
+                    errorCount++;
+//                    System.out.println("Error in block # " + blockCounter + 
+//                        " at File Record position " + blockRecords[i] + 
+//                        " (Value: " + blockRecords[i].getKey() + ")");
+//                    System.out.println("Error: Block # " + blockCounter + " currRecord at pos " + i + " (Value: " + currRec.getKey() + 
+//                        ") > nextRecord (Value: " + nextRec.getKey());
+                }
+                
                 // Increment counters
                 fileRecordPos++;
                 bytePos += 16;
+            }
+            //If not at E.O.F., keep track of block's last record
+            if (blockCounter != totalBlocks) {
+                lastRec = nextRec;
             }
             // Increment blockCounter
             blockCounter++;
@@ -246,6 +293,8 @@ public class Parser {
         // PHASE 1: Fill 8 Blocks into MinHeap
         InputBuffer inBuf = null;
         Record[] heapArray = new Record[MAX_HEAP_SIZE];
+        runCount++;
+        sortStatus = false;
 //        MinHeap<Record> mh = new MinHeap<Record>(heapArray, 0, MAX_HEAP_SIZE);
 
         // Get block with input buffer, convert to Records, add to heapArray
@@ -271,8 +320,10 @@ public class Parser {
         // PHASE 2: Replacement selection
         // Create Run File and Output Buffer
         File runFile = new File("runFile.bin");
+        
 // runFile.createNewFile();
         RandomAccessFile runRaf = new RandomAccessFile(runFile, "rw");
+        runRaf.setLength(raf.length());
         OutputBuffer outBuf = new OutputBuffer();
 
         // CASE: Input File <= 8 Blocks, so just write from the heap
@@ -281,7 +332,9 @@ public class Parser {
                 // Flush output buffer if necessary
                 if (outBuf.isFull()) {
 //                    outBuf.printRecordContents();   //FOR TESTING
+//                    System.out.println("Before write: " + runRaf.getFilePointer());
                     outBuf.writeToRunFile(runRaf);
+//                    System.out.println("After write: " + runRaf.getFilePointer());
 //                    byte[] test = new byte[8192];
 //                    test = outBuf.convertRecsToByteForm();
 //                    ByteBuffer bb = ByteBuffer.wrap(test);
@@ -297,9 +350,14 @@ public class Parser {
             // runFile should now be sorted, calling code will rename file and
             // terminate program
             outBuf.writeToRunFile(runRaf);
-            if (numErrors(runRaf) == 0) {
+            numErrors += numErrors(runRaf);
+            //return (numErrors == 0) && (runRaf.length() == raf.length());
+            if (numErrors == 0) {
+                runFile.renameTo(inputFile);
+                sortStatus = true;
                 return true;
             }
+            //return (numErrors(runRaf) == 0);
         }
 
         // CASE: Input File >= 8 Blocks, replacement selection necessary
@@ -318,8 +376,8 @@ public class Parser {
         // TODO: Make this while loop terminate when getNextByteBlock()()
         // exception thrown
         // (this works but might as well)
-        // long blockCounter = 8; // Already processed first 8 in MinHeap
-        long blockCounter = 9;
+        //long blockCounter = 8; // Already processed first 8 in MinHeap
+        long blockCounter = 9;    //Possible error point
         long totalBlocks = getNumOfBlocks();
 
         // While there are more blocks in input file, continue
@@ -353,8 +411,12 @@ public class Parser {
                 // Reactivate Heap if empty
                 if (mh.heapSize() == 0) {
                     // If no inactive portion, we are done
-                    if (!mh.reactivate()) {
-                        return false;
+                    boolean reactivateSuccess = mh.reactivate();
+                    if (!reactivateSuccess) {
+                        return true;
+                    }
+                    else {
+                        runCount++;
                     }
                 }
                 // Increment to next record of inBufRecords
@@ -384,6 +446,7 @@ public class Parser {
 
         // Reactivate and empty heap if necessary
         if (mh.reactivate()) {
+            runCount++;
             while (mh.heapSize() != 0) {
                 // Flush output buffer if necessary
                 if (outBuf.isFull()) {
@@ -395,6 +458,20 @@ public class Parser {
                 outBuf.addRecord(removedRec);
             }
         }
+        //Get number of errors in run file
+        numErrors += numErrors(runRaf);
+        
+        //If only one run and no errors, file is sorted so return
+        if (numErrors == 0 && runCount == 1) {
+            sortStatus = true;
+            return true;
+        }
+        
+        //Else if numErrors is one less than num runs, multiple runs in file
+        else if (numErrors == runCount - 1) {
+            return true;
+        }
+        
         return false;
     }
 

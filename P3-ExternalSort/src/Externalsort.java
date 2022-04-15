@@ -46,6 +46,18 @@ public class Externalsort {
         if (args.length == 1) {
             try {
                 Parser p = new Parser(args[0]);
+                p.replacementSelection();
+                
+                //If file is sorted, print to std out
+                if (p.getSortStatus()) {
+                    RandomAccessFile sortedRaf = new RandomAccessFile(fileName, "r");
+                    p.printToStdOut(sortedRaf);
+                }
+                
+                //Else, multi way merge necessary
+                else {
+                    //Multi way merge
+                }
             }
             catch (FileNotFoundException e) {
                 throw new FileNotFoundException("File titled " + fileName
