@@ -25,7 +25,7 @@ public class Parser {
     private int runCount;
     private int numErrors;
     private boolean sortStatus;
-    File inputFile;
+    private File inputFile;
 
     /**
      * Creates a Parser object, which is meant to go through fileName
@@ -472,7 +472,10 @@ public class Parser {
             return true;
         }
         
-        return false;
+        //Else, postconditions not met, replacementSelection failed
+        else {
+            return false;
+        }
     }
 
 

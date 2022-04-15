@@ -77,8 +77,8 @@ public class MinHeapTest extends TestCase {
             ByteBuffer recBuf = ByteBuffer.allocate(Double.BYTES + Long.BYTES);
             recBuf.putLong(i);
             recBuf.putDouble(d);
-            Record r = new Record(recBuf.array());
-            heapArray[i] = r;
+            Record rec = new Record(recBuf.array());
+            heapArray[i] = rec;
             d -= 1.0;
         }
         MinHeap<Record> mhr = new MinHeap<Record>(heapArray, 4096, 4096);

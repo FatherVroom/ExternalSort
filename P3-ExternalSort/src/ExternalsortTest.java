@@ -13,9 +13,9 @@ public class ExternalsortTest extends TestCase {
      * set up for tests
      */
     public void setUp() {
-        args = new String[2];
-        args[0] = "sampleInput16.bin";
-        args[1] = "8";
+//        args = new String[2];
+//        args[0] = "sampleInput16.bin";
+//        args[1] = "8";
     }
     
     public void testExternalSortException() {
@@ -47,7 +47,9 @@ public class ExternalsortTest extends TestCase {
         args[0] = "ExternalSort8BlockRandom.bin";
         Parser pc1 = new Parser(args[0]);
         Externalsort.main(args);
-        //System.out.println(systemOut().getHistory().length());
+        String s = systemOut().getHistory();
+        assertEquals(16, s.length() - s.replaceAll(" ", "").length());
+        systemOut().clearHistory();
     }
     
     public void testOutput32BlockRandom() throws IOException {
@@ -57,6 +59,9 @@ public class ExternalsortTest extends TestCase {
         args[0] = "ExternalSort32BlockRandom.bin";
         Parser pc1 = new Parser(args[0]);
         Externalsort.main(args);
+        String s = systemOut().getHistory();
+        assertEquals(64, s.length() - s.replaceAll(" ", "").length());
+        systemOut().clearHistory();
     }
     
     public void testOutput8BlockSorted() throws IOException {
@@ -66,6 +71,9 @@ public class ExternalsortTest extends TestCase {
         args[0] = "ExternalSort8BlockSorted.bin";
         Parser pc1 = new Parser(args[0]);
         Externalsort.main(args);
+        String s = systemOut().getHistory();
+        assertEquals(16, s.length() - s.replaceAll(" ", "").length());
+        systemOut().clearHistory();
     }
     
     public void testOutput32BlockSorted() throws IOException {
@@ -75,6 +83,9 @@ public class ExternalsortTest extends TestCase {
         args[0] = "ExternalSort32BlockSorted.bin";
         Parser pc1 = new Parser(args[0]);
         Externalsort.main(args);
+        String s = systemOut().getHistory();
+        assertEquals(64, s.length() - s.replaceAll(" ", "").length());
+        systemOut().clearHistory();
     }
     
     public void testOutput8BlockReverseSorted() throws IOException {
@@ -84,6 +95,9 @@ public class ExternalsortTest extends TestCase {
         args[0] = "ExternalSort8BlockReverseSorted.bin";
         Parser pc1 = new Parser(args[0]);
         Externalsort.main(args);
+        String s = systemOut().getHistory();
+        assertEquals(16, s.length() - s.replaceAll(" ", "").length());
+        systemOut().clearHistory();
     }
     
     public void testOutput32BlockReverseSorted() throws IOException {
@@ -93,6 +107,9 @@ public class ExternalsortTest extends TestCase {
         args[0] = "ExternalSort32BlockReverseSorted.bin";
         Parser pc1 = new Parser(args[0]);
         Externalsort.main(args);
+        String s = systemOut().getHistory();
+        assertEquals(64, s.length() - s.replaceAll(" ", "").length());
+        systemOut().clearHistory();
     }
 
 }

@@ -14,6 +14,12 @@ import java.io.IOException;
 // import java.math.*;
 import java.util.Random;
 
+/**
+ * 
+ * 
+ * @author Aniket Adhikari, Chris Koehler
+ *
+ */
 public class GenBinaryDataFile {
 
     static final int NumRecs = 512; // Because they are short ints
